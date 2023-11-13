@@ -34,9 +34,14 @@ Since 1999, NHANES has transitioned to a continuous survey format, distinctively
 
 NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. These include a broad range of ethnicities, age groups that range from infants to the elderly, and they intentionally oversample less prevalent populations. NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity and social determinants of health. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The sampling design adds a layer of complexity to the analysis and researchers must be careful to use appropriate survey methodologies. To facilitate the analysis of NHANES data the `nhanesA` package includes a detailed vignette describing the appropriate use of these methods and directs readers to an extensive array of online resources.
  
-Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers proves challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis, is difficult. While accurate textual description of these processes is hard, they can be succinctly and unambigously described through software. We have incorporated tools in `nhanesA` to make it easier to syncronize the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief outline describing ways in which authors can enhance the reproducibility of their work by readers as a supplement.
+Replication of published papers remains a demanding endeavor. Even wwhen data resources are provided as supplements, recreating tables and graphs from their papers proves challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis, is difficult. While accurate textual description of these processes is hard, they can be succinctly and unambigously described through software. We have incorporated tools in `nhanesA` to make it easier to synchronize the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief outline describing ways in which authors can enhance the reproducibility of their work by readers as a supplement.
 
 ## Methods
+
+### Software resources
+
+[FIXME: I think we need some comments about what an R package is and how readers could acquire and explore.
+Could a posit cloud instance be made available for people to just log in and try it out?]
 
 ### Data
 
@@ -44,19 +49,23 @@ The publicly available continuous NHANES data consists of over 1500 different ta
 
 The available data can be downloaded using `https` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format and a documentation file, in HTML, that describes the data variables and format. Going forward the CDC plans to revamp the entire survey in the 2023-2024 cycle as documented in @Ram2021.
 
-We next describe a number of the computational and analytic challenges that need to be addressed, highlighting how the `nhanesA` package offers effective and reproducible solutions. 
+We next describe how the `nhanesA` package offers effective and reproducible solutions to computational
+and analytical problems arising in epidemiological use of NHANES. 
 
 ### Search relevant variables and data files for analysis
 
-While the CDC website provides search capabilities we believe that using dedicated R-based tools offers analysts a way to directly manipulate the research results. Within the `nhanesA` package, we have incorporated advanced search utilities. Functions such as `nhanesSearch`, `nhanesSearchTableNames`, and `nhanesSearchVarName` have been crafted streamline and optimize these search processes.
+While the CDC website provides search capabilities we believe that using dedicated R-based tools offers analysts a way to programmatically prepare analyses and organize the research results. Within the `nhanesA` package, we have incorporated advanced search utilities. Functions such as `nhanesSearch`, `nhanesSearchTableNames`, and `nhanesSearchVarName` have been crafted streamline and optimize these search processes.
 
 ### Downloading data to your local machine
 
-Using `nhanesA` the data can be downloaded directly into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure \ref{fig:DEMO_J} we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
+Using `nhanesA` the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure \ref{fig:DEMO_J} we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`.
+[FIXME: Are there tests in place to identify whenever upstream changes make the translations
+invalid?  If so they should be mentioned.]
 
 ### Align tables within a cycle or across cycles
 
 After downloading the data tables within a cycle can be synchronized using the `merge` function from R with `SEQN` as the key. Additionally, one can align tables across cycles as long as the data were collected. For example the main demographic questionnaire is present in all cycles. The CDC uses some naming conventions, but these are not always applied consistently and it is important to be cautious when merging or combining data across cycles as the names of the variables are not guaranteed to be constant, and the actual questions may change over time. 
+[FIXME: does the package provide any guard rails to help avoid errors when users aren't cautious enough?]
 
 \begin{figure}[h]
   \includegraphics[width=3.5in]{images/translated.jpg}
@@ -114,7 +123,8 @@ datasub = data[data$RIDAGEYR>=40,]
 
 ```
 
-Now, we perform the same analysis using the survey weights. First we get the adjusted overall mean for the population 
+Now, we perform the same analysis using the survey weights. First we get the adjusted overall mean for the population [FIXME: the table seems out of place.  The with/without survey weights comparisons can be aligned
+in a single table perhaps]
 
 ```{r ethtables}
 table(datasub$RIDRETH1) |> kable(col.names=c("Ethnicity", "Freq"))
