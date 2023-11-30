@@ -3,10 +3,10 @@ title: 'nhanesA: Achieving Transparency and Reproducibility in NHANES Research'
 author: 'Laha Ale^[School of Computing and Artificial Intelligence, Southwest Jiaotong University, No. 999, Xian Road, Pidu District Chengdu, Sichuan 611756, China], Robert Gentleman^[Center for Computational Biomedicine, Harvard Medical School, 25 Shattuck St, Boston, MA 02115, USA], Teresa Filshtein Sonmez^[23andMe, Inc., 223 N Mathilda Ave, Sunnyvale, CA, 94086, USA], Christopher Endres^[The Promenade Dance Studio, Inc., 2605 Lord Baltimore Drive, Windsor Mill, MD, 21244, USA]'
 bibliography: references.bib
 output:
-  pdf_document: null
+  word_document: default
   bookdown::pdf_book:
     citation_package: biblatex
-  word_document: default
+  pdf_document: null
   html_document:
     df_print: paged
 header-includes: \usepackage{multicol}
@@ -44,15 +44,15 @@ The publicly available continuous NHANES data consists of over 1500 different ta
 
 The available data can be downloaded using `https` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format and a documentation file, in HTML, that describes the data variables and format. Going forward the CDC plans to revamp the entire survey in the 2023-2024 cycle as documented in @Ram2021.
 
-We next describe a number of the computational and analytic challenges that need to be addressed, highlighting how the `nhanesA` package offers effective and reproducible solutions. 
+We next describe how the `nhanesA` package offers effective and reproducible solutions to computational and analytical problems arising in epidemiological use of NHANES data. 
 
 ### Search relevant variables and data files for analysis
 
-While the CDC website provides search capabilities we believe that using dedicated R-based tools offers analysts a way to directly manipulate the research results. Within the `nhanesA` package, we have incorporated advanced search utilities. Functions such as `nhanesSearch`, `nhanesSearchTableNames`, and `nhanesSearchVarName` have been crafted streamline and optimize these search processes.
+While the CDC website provides search capabilities we believe that using dedicated R-based tools offers analysts a way to programmatically prepare analyses and organize the research results. Within the `nhanesA` package, we have incorporated advanced search utilities. Functions such as `nhanesSearch`, `nhanesSearchTableNames`, and `nhanesSearchVarName` have been crafted streamline and optimize these search processes.
 
 ### Downloading data to your local machine
 
-Using `nhanesA` the data can be downloaded directly into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure \ref{fig:DEMO_J} we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
+Using `nhanesA` the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure \ref{fig:DEMO_J} we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
 
 ### Align tables within a cycle or across cycles
 
@@ -112,12 +112,6 @@ dfsub = subset(nhanesDesign, data$RIDAGEYR>=40)
 
 datasub = data[data$RIDAGEYR>=40,]
 
-```
-
-Now, we perform the same analysis using the survey weights. First we get the adjusted overall mean for the population 
-
-```{r ethtables}
-table(datasub$RIDRETH1) |> kable(col.names=c("Ethnicity", "Freq"))
 ```
 
 For illustration purposes we examine diasotolic blood pressure and for ease of presentation we only use the first measurement, variable `BPXDI1` in tabel `BPX_J`.
