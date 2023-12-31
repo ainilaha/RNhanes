@@ -73,19 +73,19 @@ After downloading, the data tables within a cycle can be synchronized using the 
 ### Use the survey weights to obtain valid estimates
 
 NHANES uses a complex, four-stage sample design and appropriate analyses typically involve using specialized survey analysis procedures that use special weights that account for the sampling scheme that was used to collect the data. Each sample person is assigned a sample weight, reflecting the number of people in the broader population that the individual represents. To obtain valid estimates from the data, it's essential to apply these survey weights during analysis. By doing so, researchers account for the complex survey design and some potential biases, ensuring the results are reflective of the entire population and not just the sampled individuals. There is extensive documentation provided on the CDC website describing the proper use of these weights @cdcwgt2023. 
-We recommend using the `survey` @JSSv009i08 package to perform these analyses. We provide a simple example later in this paper and more extensive examples in the vignettes for the `nhanesA` R package.
+We **_use_** the `survey` @JSSv009i08 package to perform these analyses. We provide a simple example later in this paper and more extensive examples in the vignettes for the `nhanesA` R package.
 
 ## An Example
 
 We now demonstrate the use of the `nhanesA` R package, together with the `survey` package to look at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`). 
 
-```{r loadlibs, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+```{r loadlibs, eval=TRUE, echo=TRUE,message=FALSE, warning=FALSE}
 library("nhanesA")
 library("survey")
 library("knitr")
 ```
 
-```{r demoj, eval=T}
+```{r demoj, eval=TRUE}
 demoj = nhanes("DEMO_J")
 dim(demoj)
 
@@ -95,10 +95,11 @@ data = merge(demoj, bpxj, by="SEQN")
 dim(data)
 ```
 
-In order to make appropriate estimates we will need to create a survey design object to incorporate the weights into our analysis. It is essential to create the survey design structure prior to doing any subsetting of your data. This ensures that the complex survey design features, such as stratification and clustering, are accurately captured and applied to the entire dataset. The CDC provides detailed explanations at @cdcwgt2023. 
+In order to make appropriate estimates we will need to create a survey design object to incorporate the weights into our analysis. It is essential to create the survey design structure prior to doing any subsetting of your data. This ensures that the complex survey design features, such as stratification and clustering, are accurately captured and applied to the entire dataset. **_In the code below the `svydesign` function is part of the `survey` package. In the code below functions that begin with the prefix `svy` are
+from the survey package.  Other function calls may invoke methods from the survey package, readers are referred to the documentation for that package for specific recommendations. The CDC provides detailed explanations on how to use survey weights in @cdcwgt2023. _**
 
 
-```{r survery}
+```{r survey}
 nhanesDesign <- svydesign(id = ~SDMVPSU,  # Primary Sampling Units (PSU)
                           strata  = ~SDMVSTRA, # Stratification used in the survey
                           weights = ~WTMEC2YR,   # Survey weights
