@@ -7,9 +7,9 @@ output:
     keep_md: true
   bookdown::pdf_book:
     citation_package: biblatex
-  pdf_document: null
   html_document:
     df_print: paged
+  pdf_document: null
 header-includes: \usepackage{multicol}
 link-citations: yes
 csl: vancouver.csl
@@ -31,7 +31,7 @@ Database URL: <https://github.com/cjendres1/nhanes>
 
 NHANES @cdc2023 is a pivotal program dedicated to assessing the health and nutritional status of both adults and children in the United States. Its value stems from its comprehensive approach that merges detailed interviews and thorough physical examinations. NHANES is administered by the National Center for Health Statistics (NCHS), an integral part of the Centers for Disease Control and Prevention (CDC), tasked with generating crucial health and vital statistics for the entire nation.
  
-Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed @mih2023 search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies_**.
+Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed @mih2023 search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies_. Across cycle years (1999-2000 to 2017-2018), an average of approximately 10,000 participants joined the program annually, with 15,560 participants enrolled during the pre-pandemic period (2017-2020). **
 
 **_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The demographic groups include African Americans and Hispanic populations, age groups that include infants and the elderly, which are intentionally over-sampled. The sampling design is a stratified design, using 15 primary sampling units. Because of this design analyses of the data should rely on proper use of appropriate survey sampling methodology @Zipf2013 when making population-based estimates._**
 
@@ -55,17 +55,19 @@ While the CDC website provides search capabilities we believe that using dedicat
 
 ### Downloading data to your local machine
 
-Using `nhanesA` R package the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure \ref{fig:DEMO_J} we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
+Using `nhanesA` R package the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure 1, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
 
 ### Align tables within a cycle or across cycles
 
 After downloading, the data tables within a cycle can be synchronized using the `merge` function from R with `SEQN` as the key. Additionally, one can align tables across cycles as long as the data were collected. For example, the main demographic questionnaire is present in all cycles. The CDC uses some naming conventions, but these are not always applied consistently and it is important to be cautious when merging or combining data across cycles as the names of the variables are not guaranteed to be constant, and the actual questions may change over time. 
 
-\begin{figure}[h]
-  \includegraphics[width=3.5in]{images/translated.jpg}
-  \caption{a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data.}
-  \label{fig:DEMO_J}
-\end{figure}
+![Figure 1: a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data. \label{fig:DEMO_J}](images/translated.jpg)
+
+<!-- \begin{figure}[h] -->
+<!--   \includegraphics[width=3.5in]{images/translated.jpg} -->
+<!--   \caption{a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data.} -->
+<!--   \label{fig:DEMO_J} -->
+<!-- \end{figure} -->
 
 
 ### Use the survey weights to obtain valid estimates
@@ -148,22 +150,24 @@ kable(both, row.names=FALSE, col.names=c("Ethnicity", "Adj DBP", "Raw DPB"))
 
 There remain some challenges to analyzing the NHANES data for which there are no easy ways to address the issues. We discuss a number of the issues here in order to alert analysts to their existence so they can remediate any impacts. 
 
-Within NHANES there is a substantial amount of missing data. **_In part_,** this arises from non-response but it can also arise due to the fact that not all respondents participate in all of the assays, exams or questionnaires. In other settings missingness can be introduced by the process used to deliver the survey. We show an excerpt of the Blood Pressure and Cholesterol documentation for 2005-2006 in Figure \ref{fig:BPQ_020}. You can see that in question BPQ_020 that anyone who answered either *No* or *Don’t know* to the question skipped over question BPQ_030, as it makes little sense for them. **_Importantly,_** the value stored in the database for those people for BPQ_030 was a missing value. Now, in some circumstances an analyst might prefer to assume that if the respondent had not been told that they had high blood pressure once, they also had not been told they had high blood pressure two or more times. They would then fill in those missing values as *No* so that they had more complete case information for their analysis. There are many instances in the NHANES data where questions are skipped as part of the survey delivery and it is important that the analyst try to detect those and make reasonable assumptions for the analysis. 
+Within NHANES there is a substantial amount of missing data. **_In part_,** this arises from non-response but it can also arise due to the fact that not all respondents participate in all of the assays, exams or questionnaires. In other settings missingness can be introduced by the process used to deliver the survey. We show an excerpt of the Blood Pressure and Cholesterol documentation for 2005-2006 in Figure 2. You can see that in question BPQ_020 that anyone who answered either *No* or *Don’t know* to the question skipped over question BPQ_030, as it makes little sense for them. **_Importantly,_** the value stored in the database for those people for BPQ_030 was a missing value. Now, in some circumstances an analyst might prefer to assume that if the respondent had not been told that they had high blood pressure once, they also had not been told they had high blood pressure two or more times. They would then fill in those missing values as *No* so that they had more complete case information for their analysis. There are many instances in the NHANES data where questions are skipped as part of the survey delivery and it is important that the analyst try to detect those and make reasonable assumptions for the analysis. 
 
 
-\begin{figure*}
-  \centering
-  \includegraphics[width=4.5in]{images/BPQ020D.png}
-  \caption{Question BPQ\_020 from BPQ\_D.}
-  \label{fig:BPQ_020}
-\end{figure*}
+![Figure 2: Question BPQ_020 from BPQ_D. \label{fig:BPQ_020}](images/translated.jpg)
+
+<!-- \begin{figure*} -->
+<!--   \centering -->
+<!--   \includegraphics[width=4.5in]{images/BPQ020D.png} -->
+<!--   \caption{Question BPQ\_020 from BPQ\_D.} -->
+<!--   \label{fig:BPQ_020} -->
+<!-- \end{figure*} -->
 
 
 In the NHANES dataset, data coarsening is frequently observed. For instance, the age variable (RIDAGEYR in DEMO_J) uses a representation where the value 80 denotes individuals aged 80 and above. Similarly, the ratio of family income to poverty (INDFMPIR) uses the value 5 to indicate a ratio greater than or equal to 5.00. **_These practices compromise the precision of numerical values in the dataset and require some special handling. Additionally, some variables, although expressed numerically, may be better interpreted as categorical data. Consider the Body Mass Index ($11.5 \sim 67.3 kg/m^2$, represented as BMXBMI in BMX_J) for example. While it is expressed as a continuous number, categorizing it into predefined ranges such as underweight (<18.5), healthy weight (18.5 to <25), overweight (25.0 to <30), and obesity (30.0 or higher) might yield more meaningful analyses. And for BMI there are special challenges working with children where the use of age specific values are essential for identifying individuals in the extremes._**
 
 During the 2019-2020 cycle data collection was disrupted by the pandemic. Therefore, the partial 2019-2020 data (herein 2019-March 2020 data) were combined with the full data set from the previous cycle (2017-2018) to create nationally representative 2017-March 2020 pre-pandemic data files.  These data files have the same basic file name, e.g. `DEMO`, but they are named by prepending a `P_` to that, giving `P_DEMO`. These files require special handling and the CDC has provided substantial guidance as well as updating the survey weights etc. **_The suffixes (`_A`, `_B`, ..., `_M`) generally correspond to NHANES cycle years from 1999-2000 to 2023-2024. However, it is important to highlight that not every table strictly adheres to this naming convention. For instance, while `DEMO_B` and `DEMO_C` are associated with the 2001-2003 and 2005-2006 cycles, respectively, the 'DEMO' table pertains to the 1999-2000 cycle without the `_A` suffix. To assist users in navigating these variations, the `nhanesA` package includes a helpful function, `nhanesSearchTableNames()`. This function allows users to easily locate all table names containing a specific string, such as 'DEMO'. For example, executing `nhanesSearchTableNames("DEMO")` retrieves all table names that include 'DEMO', thus simplifying the process of identifying relevant tables without requiring users to remember each specific table name and its associated cycle._**
 
-## Other Approaches
+## **_Other R Packages and Software to Obtain NHANES Data_**
 
 ### R Packages
 
@@ -213,13 +217,15 @@ We believe that the `nhanesA` R package makes a substantial contribution to enha
 
 An important development was the concept of *Markdown* @Gruber, which is a straightforward markup language designed for crafting formatted text without the intricacies of HTML. Rmarkdown builds upon Markdown, intertwining it with the R programming language. Essentially, Rmarkdown is an implementation of Markdown, allowing users to embed R code within a document. This fusion supports dynamic reporting, where narrative and code coexist, fostering clear, reproducible research outcomes.
 
-@Xie2018 and @Allaire2023  **_describe systems_** that integrate software (code) and text. These can be thought of as explicit descriptions of how the figures and the tables in the published paper were created. Rmarkdown documents are processed by different *engines* that transform them into specific outputs such as a PDF format for publication or a HTML output for putting on the web. 
+The @Xie2018 and @Allaire2023  **_describe systems_** that integrate software (code) and text. These can be thought of as explicit descriptions of how the figures and the tables in the published paper were created. Rmarkdown documents are processed by different *engines* that transform them into specific outputs such as a PDF format for publication or a HTML output for putting on the web. 
 
-A second important tool to help with reproducibility is the use of version control systems. These were originally developed for software development but they work equally well for writing papers. A widely used tool for version control is GitHub @github.  One example of using this approach based on R @R-base is the Epidemiologist R Handbook @Handbook which is written in Bookdown @Xie2020 and is maintained in GitHub @Handbook2. The authors have created an entire textbook using markdown and they use GitHub to handle version issues as well as bug reporting and fixing. This approach has been used widely in the R community for over 20 years with substantial success. It should come as no surprise to the reader that this paper is also written in markdown and uses GitHub as its source code repository @paperself. **_Researchers can host their work on publishing system @Quarto and commercial @Posit._**
+A second important tool to help with reproducibility is the use of version control systems. These were originally developed for software development but they work equally well for writing papers. A widely used tool for version control is GitHub @github.  One example of using this approach based on R @R-base is the Epidemiologist R Handbook @Handbook which is written in Bookdown @Xie2020 and is maintained in GitHub @Handbook2. The authors have created an entire textbook using markdown and they use GitHub to handle version issues as well as bug reporting and fixing. This approach has been used widely in the R community for over 20 years with substantial success. **_The authors of Tidyverse @tidyverse manage a set of popular data science tools with GitHub._**It should come as no surprise to the reader that this paper is also written in markdown and uses GitHub as its source code repository @paperself. **_Researchers can host their work on publishing system @Quarto and commercial @Posit ._**
+
+![Figure 3: Workflow for ensuring transparent and reproducible research: 1) Authors use RMarkdown and R files, managed with Git version control for organization and collaboration. The nhanesA package facilitates NHANES access. Git and GitHub facilitate this by archiving and source code control. 2) Work is committed, pushed, and made public on GitHub in the form of Rmarkdown and R files. 3) Any one who wants to reproduce the work can fork or clone the repository to reproduce or expand upon the work. External users can access the NHANES database in the same way as the original authors. Contributions or extensions can be integrated via pull requests and subsequent merging.  \label{fig:process}](images/process.jpg)
 
 \begin{figure}
   \includegraphics{images/process.jpg}
-  \caption{Workflow for ensuring transparent and reproducible research: 1) Authors use RMarkdown and R files, managed with Git version control for organization and collaboration. The nhanesA package facilitates NHANES access. Git and GitHub facilitate this by archiving and source code control. 2) Work is committed, pushed, and made public on GitHub in the form of Rmarkdown and R files. 3) Any one who wants to reproduce the work can fork or clone the repository to reproduce or expand upon the work. External users can access the NHANES database in the same way as the original authors. Contributions or extensions can be integrated via pull requests and subsequent merging. }
+  \caption{}
   \label{fig:process}
 \end{figure}
 
@@ -238,20 +244,20 @@ R Markdown Cheat Sheet:<https://rmarkdown.rstudio.com/lesson-15.HTML>
 
 **GitHub:** While Git is the underlying system that tracks changes, GitHub is a web-based platform that hosts Git repositories. It provides a visual interface and additional tools for collaboration, making it easier for researchers and developers to share, discuss, and collaborate on their projects.
 
-Key Concepts:
+<!-- Key Concepts: -->
 
 
-- **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively.
+<!-- - **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively. -->
 
-- **Clone**: Cloning refers to creating a copy of a repository from GitHub onto your local machine. This allows researchers to work on their projects offline and synchronize changes later.
+<!-- - **Clone**: Cloning refers to creating a copy of a repository from GitHub onto your local machine. This allows researchers to work on their projects offline and synchronize changes later. -->
 
-- **Commit**: When you make changes to your project, Git tracks them. Committing is the process of saving these changes to the local repository. Every commit requires a message to briefly describe what was done, ensuring future users (or the future you) understand the project's evolution.
+<!-- - **Commit**: When you make changes to your project, Git tracks them. Committing is the process of saving these changes to the local repository. Every commit requires a message to briefly describe what was done, ensuring future users (or the future you) understand the project's evolution. -->
 
-- **Push**: Once changes are committed locally, they need to be sent or 'pushed' to the GitHub repository. This ensures that your online repository is up-to-date with your local changes.
+<!-- - **Push**: Once changes are committed locally, they need to be sent or 'pushed' to the GitHub repository. This ensures that your online repository is up-to-date with your local changes. -->
 
-- **Merge**: As multiple collaborators work on a project, there will be instances when two or more people modify the same piece of information. Merging is the process of combining different sequences of commits into one unified history, resolving any conflicts that arise.
+<!-- - **Merge**: As multiple collaborators work on a project, there will be instances when two or more people modify the same piece of information. Merging is the process of combining different sequences of commits into one unified history, resolving any conflicts that arise. -->
 
-- **Branch**: In Git, the main line of development is called the 'main' branch. However, when working on new features or testing out ideas without affecting the main line, users can create a 'branch' or a parallel line of development. Once satisfied with the changes, the branch can be 'merged' back into the main line.
+<!-- - **Branch**: In Git, the main line of development is called the 'main' branch. However, when working on new features or testing out ideas without affecting the main line, users can create a 'branch' or a parallel line of development. Once satisfied with the changes, the branch can be 'merged' back into the main line. -->
 
 ### A simplified NHANES paper writing process
 
