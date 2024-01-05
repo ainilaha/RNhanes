@@ -35,9 +35,9 @@ Since 1999, NHANES has transitioned to a continuous survey format, distinctively
 
 **_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The demographic groups include African Americans and Hispanic populations, age groups that include infants and the elderly, which are intentionally over-sampled. The sampling design is a stratified design, using 15 primary sampling units. Because of this design analyses of the data should rely on proper use of appropriate survey sampling methodology @Zipf2013 when making population-based estimates._**
 
-**_NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The survey is not longitudinal as different sampling units are chosen for each cycle so observed trends need to be computed and interpreted with some care. To facilitate the analysis of NHANES data the `nhanesA` R package includes a detailed vignette describing the appropriate use of these methods and directs readers to an extensive array of online resources._**
+**_NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The survey is not longitudinal as different sampling units are chosen for each cycle so observed trends need to be computed and interpreted with some care. To facilitate the analysis of NHANES data the `nhanesA` R package includes a detailed vignette describing the appropriate use of these methods and directs readers to an extensive array of online resources. The nhanesA package facilitates data extraction and processing, and has proven to be of great benefit to NHANES investigators [@Liu2022;@Rigatti2020; @Lambert2022;@Kim2021; @Rahman2022; @Rahman2022a; @McGraw2023; @Liu2021]. _**
  
-Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers proves challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis, is difficult. While accurate textual description of these processes is hard, they can be succinctly and unambigously described through software. We have incorporated tools in `nhanesA` **_R package_** to make it easier to syncronize the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief outline describing ways in which authors can enhance the reproducibility of their work by readers as a supplement.
+Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers proves challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis, is difficult. While accurate textual description of these processes is hard, they can be succinctly and **_unambiguously described through software. We have incorporated tools in `nhanesA` R package_** to make it easier to **_synchronize_** the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief outline describing ways in which authors can enhance the reproducibility of their work by readers as a supplement.
 
 ## Methods
 
@@ -45,7 +45,7 @@ Replication of published papers remains a demanding endeavor. Even with well-int
 
 The publicly available continuous NHANES data consists of over 1500 different tables, or questionnaires. Each cycle surveys a distinct set of individuals using a cluster sample approach @cdcex2023. Each cycle produces data tables in five categories: Demographics, Dietary, Examination, Laboratory and Questionnaire. There is also limited access data that is not publicly available and requires a formal request for access.
 
-The available data can be downloaded using `https` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format and a documentation file, in HTML, that describes the data variables and format. Going forward the CDC plans to revamp the entire survey in the 2023-2024 cycle as documented in @Ram2021.
+The available data can be downloaded using `HTTPS` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format and a documentation file, in HTML, that describes the data variables and format. Going forward the CDC plans to revamp the entire survey in the 2023-2024 cycle as documented in @Ram2021.
 
 We next describe how the `nhanesA` **_R package_** offers effective and reproducible solutions to computational and analytical problems arising in epidemiological use of NHANES data. 
 
@@ -55,7 +55,7 @@ While the CDC website provides search capabilities we believe that using dedicat
 
 ### Downloading data to your local machine
 
-Using `nhanesA` R package the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure 1, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
+**_Using the `nhanesA` R package,_** the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure 1, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
 
 ### Align tables within a cycle or across cycles
 
@@ -132,7 +132,7 @@ mns = data.frame(Ethnicity = names(mns), "Raw DBP"=mns)
 kable(mns, row.names=FALSE)
 ```
 
-Next, we perform the same analysis using the survey weigths. First we compute the adjusted **_overall_** mean for the population represented by the data in the table and then also compute adjusted means for each ethnicity and present both those estimates and the unadjusted estimates computed above in a single table.
+Next, we perform the same analysis using the survey weights. First we compute the adjusted **_overall_** mean for the population represented by the data in the table and then also compute adjusted means for each ethnicity and present both those estimates and the unadjusted estimates computed above in a single table.
 
 ```{r svyby}
 adjmn = svymean(~BPXDI1, dfsub, na.rm=TRUE)
@@ -202,11 +202,11 @@ We believe that encapsulating the public NHANES data into a SQL database that is
 ## Code availability
 The `nhanesA` **_R package_** is available to the public on: <https://github.com/cjendres1/nhanes>. The current CRAN version is also available at <https://github.com/cran/nhanesA>.
 
-## Confict of interest.
+## Conflict of interest.
 RG consults broadly in the pharmaceutical and Biotech industries. He owns shares or options in a number of publicly traded and private companies.
 TFS owns shares in a publicly traded company.
 
-## Acknowledgements
+## Acknowledgments
 
 We thank Vincent Carey from Harvard Medical School for his review and insights on our paper. Additionally, we thank our colleagues from the Center for Computational Biomedicine: Nathan Palmer, Rafael Goncalves, Jason Payne, and Samantha Pullman, for their efforts in building the Docker database and testing the `nhanesA` R package.
 
@@ -231,6 +231,38 @@ A second important tool to help with reproducibility is the use of version contr
 \end{figure}
 
 
+
+### Summary of nhanesA Functions
+
+Table 1: List of of the functions of nhanesA 1.0.
+```{r functions,echo=FALSE}
+func_list = c(
+browseNHANES="Open a browser to NHANES.",
+nhanes="Download an NHANES table and return as a data frame.",
+nhanesAttr="Returns the attributes of an NHANES data table.",
+nhanesCodebook="Display codebook for selected variable.",
+nhanesCodebookFromURL="Parse NHANES doc URL",
+nhanesDXA	= "Import Dual Energy X-ray Absorptiometry (DXA) data.",
+nhanesFromURL= "Parse NHANES doc URL",
+nhanesManifest= "Download and parse NHANES manifests",
+nhanesOptions= "Options for the nhanesA package",
+nhanesSearch= "	Perform a search over the comprehensive NHANES variable list.",
+nhanesSearchTableNames= "	Search for matching table names",
+nhanesSearchVarName= "	Search for tables that contain a specified variable.",
+nhanesTables= "	Returns a list of table names for the specified survey group.",
+nhanesTableSummary= "	Summarize NHANES table",
+nhanesTableVars= "Displays a list of variables in the specified NHANES table.",
+nhanesTranslate= "Display code translation information."
+)
+
+
+func_df = data.frame(Functions=names(func_list), 
+                     Descriptions=func_list
+                     )
+knitr::kable(func_df, "pipe",row.names = F)
+
+```
+
 #### Markdown
 
 Markdown is a lightweight markup language that uses simple syntax to format text. Designed for readability and simplicity, it enables the creation of well-structured documents without the complexities of HTML. Common uses include README files, forums, and documentation. With Markdown, elements like headers, links, lists, and bold or italic text are easily achieved using non-intrusive syntax.
@@ -245,20 +277,33 @@ R Markdown Cheat Sheet:<https://rmarkdown.rstudio.com/lesson-15.HTML>
 
 **GitHub:** While Git is the underlying system that tracks changes, GitHub is a web-based platform that hosts Git repositories. It provides a visual interface and additional tools for collaboration, making it easier for researchers and developers to share, discuss, and collaborate on their projects.
 
-<!-- Key Concepts: -->
+Key Concepts:
 
 
-<!-- - **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively. -->
+- **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively.
 
-<!-- - **Clone**: Cloning refers to creating a copy of a repository from GitHub onto your local machine. This allows researchers to work on their projects offline and synchronize changes later. -->
+- **Clone**: Cloning refers to creating a copy of a repository from GitHub onto your local machine. This allows researchers to work on their projects offline and synchronize changes later.
 
-<!-- - **Commit**: When you make changes to your project, Git tracks them. Committing is the process of saving these changes to the local repository. Every commit requires a message to briefly describe what was done, ensuring future users (or the future you) understand the project's evolution. -->
+- **Commit**: When you make changes to your project, Git tracks them. Committing is the process of saving these changes to the local repository. Every commit requires a message to briefly describe what was done, ensuring future users (or the future you) understand the project's evolution.
 
-<!-- - **Push**: Once changes are committed locally, they need to be sent or 'pushed' to the GitHub repository. This ensures that your online repository is up-to-date with your local changes. -->
+- **Push**: Once changes are committed locally, they need to be sent or 'pushed' to the GitHub repository. This ensures that your online repository is up-to-date with your local changes.
 
-<!-- - **Merge**: As multiple collaborators work on a project, there will be instances when two or more people modify the same piece of information. Merging is the process of combining different sequences of commits into one unified history, resolving any conflicts that arise. -->
+- **Merge**: As multiple collaborators work on a project, there will be instances when two or more people modify the same piece of information. Merging is the process of combining different sequences of commits into one unified history, resolving any conflicts that arise.
 
-<!-- - **Branch**: In Git, the main line of development is called the 'main' branch. However, when working on new features or testing out ideas without affecting the main line, users can create a 'branch' or a parallel line of development. Once satisfied with the changes, the branch can be 'merged' back into the main line. -->
+- **Branch**: In Git, the main line of development is called the 'main' branch. However, when working on new features or testing out ideas without affecting the main line, users can create a 'branch' or a parallel line of development. Once satisfied with the changes, the branch can be 'merged' back into the main line.
+
+### Sample Design of NHANES
+
+**_In @Zipf2013 the authors provide the following description of the sampling design.  Anyone analyzing these data should work with sample survey experts to ensure that their models are accurately accounting for the sampling design._**
+
+_NHANES was designed to assess the health and nutritional status of the civilian noninstitutionalized U.S. population. NHANES data were not obtained using a simple random sample. Rather, a complex, multistage probability sampling design was used to select a sample representative of the civilian noninstitutionalized household population of the United States._
+_Sample selection for NHANES followed these stages, in order:_
+_1. Selection of primary sampling units (PSUs), which are counties or small groups of contiguous counties._
+_2. Selection of segments within PSUs that constitute a block or group of blocks containing a cluster of households._
+_3. Selection of specific households within segments._
+_4. Selection of individuals within a household; see the ‘‘Household Interview’’ section for more information on sample person selection._
+
+
 
 ### A simplified NHANES paper writing process
 
