@@ -154,7 +154,7 @@ There remain some challenges to analyzing the NHANES data for which there are no
 Within NHANES there is a substantial amount of missing data. **_In part_,** this arises from non-response but it can also arise due to the fact that not all respondents participate in all of the assays, exams or questionnaires. In other settings missingness can be introduced by the process used to deliver the survey. We show an excerpt of the Blood Pressure and Cholesterol documentation for 2005-2006 in Figure 2. **_You can see that anyone who answered either *No* or *Don’t know* to question BPQ_020 skipped over question BPQ_030, as it makes little sense for them. Importantly,_** the value stored in the database for those people for BPQ_030 was a missing value. Now, in some circumstances an analyst might prefer to assume that if the respondent had not been told that they had high blood pressure once, they also had not been told they had high blood pressure two or more times. They would then fill in those missing values as *No* so that they had more complete case information for their analysis. There are many instances in the NHANES data where questions are skipped as part of the survey delivery and it is important that the analyst try to detect those and make reasonable assumptions for the analysis. 
 
 
-![Figure 2: Question BPQ_020 from BPQ_D. \label{fig:BPQ_020}](images/translated.jpg)
+![Figure 2: Question BPQ_020 from BPQ_D. \label{fig:BPQ_020}](images/BPQ020D.png)
 
 <!-- \begin{figure*} -->
 <!--   \centering -->
