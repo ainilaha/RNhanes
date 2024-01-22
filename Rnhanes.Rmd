@@ -1,6 +1,6 @@
 ---
 title: 'nhanesA: Achieving Transparency and Reproducibility in NHANES Research'
-author: 'Laha Ale^[School of Computing and Artificial Intelligence, Southwest Jiaotong University, No. 999, Xian Road, Pidu District Chengdu, Sichuan 611756, China], Robert Gentleman^[Center for Computational Biomedicine, Harvard Medical School, 25 Shattuck St, Boston, MA 02115, USA], Teresa Filshtein Sonmez^[23andMe, Inc., 223 N Mathilda Ave, Sunnyvale, CA, 94086, USA], Christopher Endres^[The Promenade Dance Studio, Inc., 2605 Lord Baltimore Drive, Windsor Mill, MD, 21244, USA]'
+author: 'Laha Ale^[School of Computing and Artificial Intelligence, Southwest Jiaotong University, No. 999, Xian Road, Pidu District Chengdu, Sichuan 611756, China], Robert Gentleman^[Center for Computational Biomedicine, Harvard Medical School, 25 Shattuck St, Boston, MA 02115, USA], Teresa Filshtein Sonmez^[23andMe, Inc., 223 N Mathilda Ave, Sunnyvale, CA, 94086, USA], Deepayan Sarkar^[Theoretical Statistics and Mathematics Unit, Indian Statistical Institute, 7 SJSS Marg, New Delhi 110016, India], Christopher Endres^[The Promenade Dance Studio, Inc., 2605 Lord Baltimore Drive, Windsor Mill, MD, 21244, USA]'
 bibliography: references.bib
 output:
   word_document: 
@@ -16,7 +16,8 @@ csl: vancouver.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = TRUE, cache.path = 'knitr-cache/rnhanes/')
 ```
 
 
@@ -27,41 +28,48 @@ The National Health and Nutrition Examination Survey (NHANES) provides comprehen
 
 Database URL: <https://github.com/cjendres1/nhanes>
 
+
+## TODO
+
+- SAS / XPT - reference?
+
+
 ## Introduction
 
 NHANES @cdc2023 is a pivotal program dedicated to assessing the health and nutritional status of both adults and children in the United States. Its value stems from its comprehensive approach that merges detailed interviews and thorough physical examinations. NHANES is administered by the National Center for Health Statistics (NCHS), an integral part of the Centers for Disease Control and Prevention (CDC), tasked with generating crucial health and vital statistics for the entire nation.
  
-Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed @mih2023 search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies_. Across cycle years (1999-2000 to 2017-2018), an average of approximately 10,000 participants joined the program annually, with 15,560 participants enrolled during the period (2017-2020) where activities were altered due to the COVID pandemic._**
+Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed @mih2023 search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies. Across cycle years (1999-2000 to 2017-2018), an average of approximately 10,000 participants joined the program annually, with 15,560 participants enrolled during the period (2017-2020) where activities were altered due to the COVID pandemic._**
 
-**_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The demographic groups include African Americans and Hispanic populations, age groups that include infants and the elderly, which are intentionally over-sampled. The sampling design is a stratified design, using 15 primary sampling units. Because of this design analyses of the data should rely on proper use of appropriate survey sampling methodology @Zipf2013 when making population-based estimates._**
+**_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The demographic groups include African Americans and Hispanic populations, age groups that include infants and the elderly, which are intentionally over-sampled. The sampling design is a stratified design, using 15 primary sampling units. Because of this design, analyses of the data should rely on proper use of appropriate survey sampling methodology @Zipf2013 when making population-based estimates._**
 
-**_NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The survey is not longitudinal as different sampling units are chosen for each cycle so observed trends need to be computed and interpreted with some care. To facilitate the analysis of NHANES data the `nhanesA` R package includes a detailed vignette describing the appropriate use of these methods and directs readers to an extensive array of online resources. The nhanesA package facilitates data extraction and processing, and has proven to be of great benefit to investigators analyzing NHANES data [@Liu2022;@Rigatti2020; @Lambert2022;@Kim2021; @Rahman2022; @Rahman2022a; @McGraw2023; @Liu2021; @Pinheiro2023]. _**
+**_NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The survey is not longitudinal as different sampling units are chosen for each cycle so observed trends need to be computed and interpreted with some care. To facilitate the analysis of NHANES data the `nhanesA` R package includes a detailed vignette describing the appropriate use of these methods and directs readers to an extensive array of online resources. The nhanesA package facilitates data extraction and processing, and has proven to be of great benefit to investigators analyzing NHANES data [@Liu2022; @Rigatti2020; @Lambert2022; @Kim2021; @Rahman2022; @Rahman2022a; @McGraw2023; @Liu2021; @Pinheiro2023]. _**
  
-Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers proves challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis, is difficult. While accurate textual description of these processes is hard, they can be succinctly and **_unambiguously described through software. We have incorporated tools in `nhanesA` R package_** to make it easier to **_synchronize_** the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief outline describing ways in which authors can enhance the reproducibility of their work by readers as a supplement.
+Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers may prove challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis is difficult. While accurate textual description of these processes **_can become unwieldy_**, they can be succinctly and **_unambiguously described through software. We have incorporated tools in the `nhanesA` R package_** to make it easier to **_synchronize_** the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief outline, **_in the form of a supplement_**, describing ways in which authors can enhance the reproducibility of their work by readers.
 
 ## Methods
 
 ### Data
 
-The publicly available continuous NHANES data consists of over 1500 different tables, or questionnaires. Each cycle surveys a distinct set of individuals using a cluster sample approach @cdcex2023. Each cycle produces data tables in five categories: Demographics, Dietary, Examination, Laboratory and Questionnaire. There is also limited access data that is not publicly available and requires a formal request for access.
+The publicly available continuous NHANES data consists of over 1500 different tables, or questionnaires. Each cycle surveys a distinct set of individuals using a cluster sample approach @cdcex2023. Each cycle produces data tables in five categories: Demographics, Dietary, Examination, Laboratory and Questionnaire. There are also limited access data that are not publicly available and require a formal request for access.
 
-The available data can be downloaded using `HTTPS` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format and a documentation file, in HTML, that describes the data variables and format. During the COVID pandemic the CDC modified some procedures as documented in @Ram2021.
+The available data can be downloaded using `HTTPS` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format, and a documentation file, in HTML, that describes the data variables and format. During the COVID pandemic the CDC modified some procedures as documented in @Ram2021.
 
 We next describe how the `nhanesA` **_R package_** offers effective and reproducible solutions to computational and analytical problems arising in epidemiological use of NHANES data. 
 
 ### Search relevant variables and data files for analysis
 
-While the CDC website provides search capabilities we believe that using dedicated R-based tools offers analysts a way to programmatically prepare analyses and organize the research results. Within the `nhanesA` **_R package_**, we have incorporated advanced search utilities. Functions such as `nhanesSearch`, `nhanesSearchTableNames`, and `nhanesSearchVarName` have been crafted streamline and optimize these search processes.
+While the CDC website provides search capabilities, we believe that using dedicated R-based tools offers analysts a way to programmatically prepare analyses and organize the research results. Within the `nhanesA` **_R package_**, we have incorporated advanced search utilities. Functions such as `nhanesSearch()`, `nhanesSearchTableNames()`, and `nhanesSearchVarName()` have been crafted to streamline and optimize these search processes.
 
 ### Downloading data to your local machine
 
-**_Using the `nhanesA` R package,_** the data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are encoded as integers. In Figure 1, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  If an untranslated categorical variable is used in a regression model then the variable would be treated as an integer variable and the corresponding estimates would, in general, not be appropriate. By default the `nhanes` function will translate the data and users can specify that they want the untranslated data by setting the argument `translated` to `FALSE`. 
+**_Using the `nhanesA` R package,_** data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes()` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are **_typically encoded as integers in the raw data available as XPT files, with the interpretations of these integer codes available in the accompanying HTML documentation files. By default, the `nhanes()` function 'translates' these integer codes into more easily interpretable text strings._** In Figure 1, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from `DEMO_J`. Where, for example, the untranslated values for `RIAGENDR`  coded as `1` and `2` are translated to `Male` and `Female`.  
 
-### Align tables within a cycle or across cycles
+**_Apart from ease of interpretation, this translation is also important because _** if an untranslated categorical variable is used in a regression model then the variable would be treated as a **_continuous_** variable and the corresponding estimates would, in general, not be appropriate. **_The default translation in the `nhanes()` function can be suppressed_** by setting the argument `translated` to `FALSE`. 
 
-After downloading, the data tables within a cycle can be synchronized using the `merge` function from R with `SEQN` as the key. Additionally, one can align tables across cycles as long as the data were collected. For example, the main demographic questionnaire is present in all cycles. The CDC uses some naming conventions, but these are not always applied consistently and it is important to be cautious when merging or combining data across cycles as the names of the variables are not guaranteed to be constant, and the actual questions may change over time. 
 
 ![Figure 1: a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data. \label{fig:DEMO_J}](images/translated.jpg)
+
+
 
 <!-- \begin{figure}[h] -->
 <!--   \includegraphics[width=3.5in]{images/translated.jpg} -->
@@ -70,10 +78,16 @@ After downloading, the data tables within a cycle can be synchronized using the 
 <!-- \end{figure} -->
 
 
+
+### Align tables within a cycle or across cycles
+
+**_After downloading, the resulting data frames may be processed further using standard R data manipulation tools, including those from popular contributed packages such as `dplyr` [@dplyr2023wickham], `data.table` [@datatable2023dowle], etc. For example, data from tables_** within a cycle can be synchronized using the R function `merge()` with `SEQN` as the key. Additionally, one can align tables across cycles as long as the relevant data were collected **_in all the cycles_**. For example, the main demographic questionnaire is present in all cycles. However, **_it is important to be cautious when merging or combining data across cycles_** as the names of the variables are not guaranteed to be constant, and the actual questions may change over time. The CDC uses some naming conventions, but these are not always applied consistently.
+
+
 ### Use the survey weights to obtain valid estimates
 
 NHANES uses a complex, four-stage sample design and appropriate analyses typically involve using survey analysis procedures that use special weights that account for the sampling scheme that was used to collect the data. Each sample person is assigned a sample weight, reflecting the number of people in the broader population that the individual represents. To obtain valid estimates from the data, it's essential to apply these survey weights during analysis. By doing so, researchers account for the complex survey design and some potential biases, ensuring the results are reflective of the entire population and not just the sampled individuals. There is extensive documentation provided on the CDC website describing the proper use of these weights @cdcwgt2023. 
-We **_use_** the `survey` @JSSv009i08 package to perform these analyses. We provide a simple example later in this paper and more extensive examples in the vignettes for the `nhanesA` R package.
+We **_use_** the `survey` package [@JSSv009i08] to perform these analyses. We provide a simple example later in this paper and more extensive examples in the vignettes for the `nhanesA` package.
 
 ## An Example
 
@@ -95,8 +109,7 @@ data = merge(demoj, bpxj, by="SEQN")
 dim(data)
 ```
 
-In order to make appropriate estimates we will need to create a survey design object to incorporate the weights into our analysis. It is essential to create the survey design structure prior to doing any subsetting of your data. This ensures that the complex survey design features, such as stratification and clustering, are accurately captured and applied to the entire dataset. **_In the code below functions that begin with the prefix `svy` are
-from the survey package.  Other function calls may invoke methods from the survey package, readers are referred to the documentation for that package for specific recommendations. The CDC provides detailed explanations on how to use survey weights in @cdcwgt2023. _**
+In order to make appropriate estimates we will need to create a survey design object to incorporate the weights into our analysis. It is essential to create the survey design structure prior to doing any subsetting of your data. This ensures that the complex survey design features, such as stratification and clustering, are accurately captured and applied to the entire dataset. **_In the code below functions that begin with the prefix `svy` are from the survey package.  Other function calls may invoke methods from the survey package, readers are referred to the documentation for that package for specific recommendations. The CDC provides detailed explanations on how to use survey weights in @cdcwgt2023. _**
 
 
 ```{r survey}
@@ -113,11 +126,8 @@ nhanesDesign <- svydesign(id = ~SDMVPSU,  # Primary Sampling Units (PSU)
 
 
 ```{r surveydesign}
-
-dfsub = subset(nhanesDesign, data$RIDAGEYR>=40)
-
-datasub = data[data$RIDAGEYR>=40,]
-
+dfsub = subset(nhanesDesign, RIDAGEYR >= 40)
+datasub = subset(data, RIDAGEYR >= 40)
 ```
 
 For illustration purposes we examine diasotolic blood pressure and for ease of presentation we only use the first measurement, variable `BPXDI1` in tabel `BPX_J`.
@@ -131,6 +141,20 @@ mns = sapply(sp1, mean, na.rm=TRUE)
 mns = data.frame(Ethnicity = names(mns), "Raw DBP"=mns)
 kable(mns, row.names=FALSE)
 ```
+
+OR
+
+```{r unadjbp2}
+with(datasub, mean(BPXDI1, na.rm = TRUE))
+##divide the data by RIDRETH1
+mns = with(datasub, tapply(BPXDI1, RIDRETH1, mean, na.rm = TRUE))
+## mns = tapply(datasub, ~ RIDRETH1, FUN = with,
+##              data.frame(`Raw DBP` = mean(BPXDI1, na.rm = TRUE)))
+kable(array2DF(mns, responseName = "Raw DBP"), row.names=FALSE)
+## kable(array2DF(mns), row.names=FALSE)
+```
+
+
 
 Next, we perform the same analysis using the survey weights. First we compute the adjusted **_overall_** mean for the population represented by the data in the table and then also compute adjusted means for each ethnicity and present both those estimates and the unadjusted estimates computed above in a single table.
 
