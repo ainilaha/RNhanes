@@ -91,7 +91,7 @@ We **_use_** the `survey` package [@JSSv009i08] to perform these analyses. We pr
 
 ## An Example
 
-We now demonstrate the use of the `nhanesA` R package, together with the `survey` package to look at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`). 
+We now demonstrate the use of the `nhanesA` R package **_through some examples. The first example uses tools in_** the `survey` package to look at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`). 
 
 ```{r loadlibs, eval=TRUE, echo=TRUE,message=FALSE, warning=FALSE}
 library("nhanesA")
@@ -150,25 +150,23 @@ with(datasub, mean(BPXDI1, na.rm = TRUE))
 mns = with(datasub, tapply(BPXDI1, RIDRETH1, mean, na.rm = TRUE))
 ## mns = tapply(datasub, ~ RIDRETH1, FUN = with,
 ##              data.frame(`Raw DBP` = mean(BPXDI1, na.rm = TRUE)))
-kable(array2DF(mns, responseName = "Raw DBP"), row.names=FALSE)
-## kable(array2DF(mns), row.names=FALSE)
+mns = data.frame(Ethnicity = names(mns), Raw_DBP = mns)
+kable(mns, row.names = FALSE)
 ```
 
 
 
 Next, we perform the same analysis using the survey weights. First we compute the adjusted **_overall_** mean for the population represented by the data in the table and then also compute adjusted means for each ethnicity and present both those estimates and the unadjusted estimates computed above in a single table.
 
-```{r svyby}
-adjmn = svymean(~BPXDI1, dfsub, na.rm=TRUE)
+```{r svyby, error = TRUE}
+adjmn = svymean(~ BPXDI1, dfsub, na.rm=TRUE)
 adjmn
 # By ethnicity
 adjmnsbyEth = svyby(~BPXDI1, ~RIDRETH1, dfsub, svymean, na.rm=TRUE)
 kable(adjmnsbyEth[,c(2,3)], col.names=c("Adj DBP","SE"))
 ##all.equal(names(mns), as.character(adjmnsbyEth$RIDRETH1)
-
-both = cbind(adjmnsbyEth[,c(1,2)], mns[,2] )
+both = cbind(adjmnsbyEth[, c(1, 2)], mns[, 2])
 kable(both, row.names=FALSE, col.names=c("Ethnicity", "Adj DBP", "Raw DPB"))
-
 ```
 
 ### Challenging Aspects of the NHANES data
