@@ -87,16 +87,15 @@ While the CDC website provides search capabilities, we believe that using dedica
 ### Use the survey weights to obtain valid estimates
 
 NHANES uses a complex, four-stage sample design and appropriate analyses typically involve using survey analysis procedures that use special weights that account for the sampling scheme that was used to collect the data. Each sample person is assigned a sample weight, reflecting the number of people in the broader population that the individual represents. To obtain valid estimates from the data, it's essential to apply these survey weights during analysis. By doing so, researchers account for the complex survey design and some potential biases, ensuring the results are reflective of the entire population and not just the sampled individuals. There is extensive documentation provided on the CDC website describing the proper use of these weights @cdcwgt2023. 
-We **_use_** the `survey` package [@JSSv009i08] to perform these analyses. We provide a simple example later in this paper and more extensive examples in the vignettes for the `nhanesA` package.
+We **_use_** the `survey` package [@JSSv009i08] to perform these analyses. We provide a simple example in this paper and more extensive examples in the vignettes for the `nhanesA` package.
 
 ## An Example
 
-We now demonstrate the use of the `nhanesA` R package **_through some examples. The first example uses tools in_** the `survey` package to look at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`). 
+We now demonstrate the use of the `nhanesA` R package **_through some examples. The first example_** looks at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`).
 
 ```{r loadlibs, eval=TRUE, echo=TRUE,message=FALSE, warning=FALSE}
 library("nhanesA")
 library("survey")
-library("knitr")
 ```
 
 ```{r demoj, eval=TRUE}
@@ -109,24 +108,23 @@ data = merge(demoj, bpxj, by="SEQN")
 dim(data)
 ```
 
-In order to make appropriate estimates we will need to create a survey design object to incorporate the weights into our analysis. It is essential to create the survey design structure prior to doing any subsetting of your data. This ensures that the complex survey design features, such as stratification and clustering, are accurately captured and applied to the entire dataset. **_In the code below functions that begin with the prefix `svy` are from the survey package.  Other function calls may invoke methods from the survey package, readers are referred to the documentation for that package for specific recommendations. The CDC provides detailed explanations on how to use survey weights in @cdcwgt2023. _**
+In order to make appropriate estimates we will need to create a survey design object to incorporate the weights into our analysis. It is essential to create the survey design structure prior to doing any subsetting of your data. This ensures that the complex survey design features, such as stratification and clustering, are accurately captured and applied to the entire dataset. **_In the code below, we use tools in the R package `survey` [@JSSv009i08]. We refer the reader to the documentation for that package for specific recommendations. The CDC provides detailed explanations on how to use survey weights in @cdcwgt2023. _**
 
 
 ```{r survey}
-nhanesDesign <- svydesign(id = ~SDMVPSU,  # Primary Sampling Units (PSU)
-                          strata  = ~SDMVSTRA, # Stratification used in the survey
-                          weights = ~WTMEC2YR,   # Survey weights
-                          nest    = TRUE,      # Whether PSUs are nested within strata
+nhanesDesign <- svydesign(id = ~ SDMVPSU,       # Primary Sampling Units (PSU)
+                          strata  = ~ SDMVSTRA, # Stratification used in the survey
+                          weights = ~ WTMEC2YR, # Survey weights
+                          nest    = TRUE,       # Whether PSUs are nested within strata
                           data    = data)
 
 ```
-
 
 **_Next,_** we subset the data to contain only subjects over 40 years of age. We use the tools in the `survey` package to that appropriate adjustment of weights is made. We also create a second subset that is not contained within a survey design framework so that it is easy to examine the unadjusted values. 
 
 
 ```{r surveydesign}
-dfsub = subset(nhanesDesign, RIDAGEYR >= 40)
+dfsub = subset(nhanesDesign, RIDAGEYR >= 40) # method in survey package
 datasub = subset(data, RIDAGEYR >= 40)
 ```
 
@@ -139,7 +137,7 @@ sp1 = split(datasub$BPXDI1, datasub$RIDRETH1)
 mns = sapply(sp1, mean, na.rm=TRUE)
 
 mns = data.frame(Ethnicity = names(mns), "Raw DBP"=mns)
-kable(mns, row.names=FALSE)
+knitr::kable(mns, row.names=FALSE)
 ```
 
 OR
@@ -151,7 +149,7 @@ mns = with(datasub, tapply(BPXDI1, RIDRETH1, mean, na.rm = TRUE))
 ## mns = tapply(datasub, ~ RIDRETH1, FUN = with,
 ##              data.frame(`Raw DBP` = mean(BPXDI1, na.rm = TRUE)))
 mns = data.frame(Ethnicity = names(mns), Raw_DBP = mns)
-kable(mns, row.names = FALSE)
+knitr::kable(mns, row.names = FALSE)
 ```
 
 
@@ -163,10 +161,10 @@ adjmn = svymean(~ BPXDI1, dfsub, na.rm=TRUE)
 adjmn
 # By ethnicity
 adjmnsbyEth = svyby(~BPXDI1, ~RIDRETH1, dfsub, svymean, na.rm=TRUE)
-kable(adjmnsbyEth[,c(2,3)], col.names=c("Adj DBP","SE"))
+knitr::kable(adjmnsbyEth[,c(2,3)], col.names=c("Adj DBP","SE"))
 ##all.equal(names(mns), as.character(adjmnsbyEth$RIDRETH1)
 both = cbind(adjmnsbyEth[, c(1, 2)], mns[, 2])
-kable(both, row.names=FALSE, col.names=c("Ethnicity", "Adj DBP", "Raw DPB"))
+knitr::kable(both, row.names=FALSE, col.names=c("Ethnicity", "Adj DBP", "Raw DPB"))
 ```
 
 ### Challenging Aspects of the NHANES data
