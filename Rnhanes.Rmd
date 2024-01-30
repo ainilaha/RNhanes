@@ -24,38 +24,24 @@ knitr::opts_chunk$set(echo = TRUE,
 ## Abstract
 
 
-The National Health and Nutrition Examination Survey (NHANES) provides comprehensive data on demographics, sociology, health, and nutrition. Conducted in two-year cycles since 1999, most of its data are publicly accessible, making it pivotal for research areas like **_studying social determinants of health or tracking trends in health metrics such as obesity or diabetes. Assembling the data and analyzing it presents a number of technical and analytic challenges. This paper introduces the `nhanesA` R package_**, that is designed to assist researchers in data retrieval, analysis, and to enable the sharing and extending of prior research efforts. We believe that fostering community-driven activity in data reproducibility and sharing of analytic methods will greatly benefit the scientific community and propel scientific advancements. 
+The National Health and Nutrition Examination Survey (NHANES) provides comprehensive data on demographics, sociology, health, and nutrition. Conducted in two-year cycles since 1999, most of its data are publicly accessible, making it pivotal for research areas like **_studying social determinants of health or tracking trends in health metrics such as obesity or diabetes. Assembling the data and analyzing it presents a number of technical and analytic challenges. This paper introduces the `nhanesA` R package, which is_** designed to assist researchers in data retrieval, analysis, and to enable the sharing and extending of prior research efforts. We believe that fostering community-driven activity in data reproducibility and sharing of analytic methods will greatly benefit the scientific community and propel scientific advancements. 
 
 Database URL: <https://github.com/cjendres1/nhanes>
 
-
-## TODO
-
-- SAS / XPT - reference?
-
-- Variable names `data`, `datasub`, `dfsub` are very generic - change?
-
-- Several citation need proper bibtex entries
-
-- Split appendix into separate supplement 
-
-- Move table of `nhanesA` functions from the appendix to the main paper?
-
-- Rethink the additional comments about BMI: Even if binning BMI is more useful, it's not reasonable to fault CDC for giving numerical values of BMI.
 
 ## Introduction
 
 NHANES [@cdc2023] is a pivotal program dedicated to assessing the health and nutritional status of both adults and children in the United States. Its value stems from its comprehensive approach that merges detailed interviews and thorough physical examinations. NHANES is administered by the National Center for Health Statistics (NCHS), an integral part of the Centers for Disease Control and Prevention (CDC), tasked with generating crucial health and vital statistics for the entire nation.
  
-Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed [@mih2023] search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies. Across cycle years (1999-2000 to 2017-2018), an average of approximately 10,000 participants joined the program annually, with 15,560 participants enrolled during the period (2017-2020) where activities were altered due to the COVID pandemic._**
+Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed [@mih2023] search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies. Across cycle years (1999-2000 to 2017-2018), approximately 5,000 participants joined the program annually, with data of 15,560 participants reported for the period 2017-March 2020, where activities were altered due to the COVID pandemic._**
 
-**_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The demographic groups include African Americans and Hispanic populations, age groups that include infants and the elderly, which are intentionally over-sampled. The sampling design is a stratified design, using 15 primary sampling units. Because of this design, analyses of the data should rely on proper use of appropriate survey sampling methodology [@Zipf2013] when making population-based estimates._**
+**_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The sampling design intentionally over-samples demographic groups such as African Americans and Hispanic populations, and age groups such as adolescents and the elderly. The sampling design is a stratified design, with 15 counties across the US chosen as primary sampling units each year. Because of this design, analyses of the data should rely on proper use of appropriate survey sampling methodology [@Zipf2013] when making population-level estimates._**
 
-**_NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The survey is not longitudinal as different sampling units are chosen for each cycle so observed trends need to be computed and interpreted with some care._**
+**_NHANES serves as a useful tool for studying both prevalence of, and temporal shifts in, critical public health issues such as obesity. While each cycle is cross-sectional, one can examine the sequential order of cycles to get a sense of evolving population characteristics over time. The survey is not longitudinal as different sampling units are chosen for each cycle, so observed trends need to be computed and interpreted with some care._**
 
-**_The `nhanesA` R package facilitates the analysis of NHANES data by providing tools to search, download, extract and process data available in CDC's NHANES website. It has proven to be of great benefit to investigators analyzing NHANES data [@Liu2022; @Rigatti2020; @Lambert2022; @Kim2021; @Rahman2022; @Rahman2022a; @McGraw2023; @Liu2021; @Pinheiro2023]. We show some elementary examples illustrating the use of the package in the next section. The package also includes more detailed vignettes, describing in particular the appropriate use of survey weights, and directing readers to an extensive array of online resources._**
+**_This paper introduces the `nhanesA` R package, which facilitates the analysis of NHANES data by providing tools to search, download, extract and process data available in CDC's NHANES website. It has proven to be of great benefit to investigators analyzing NHANES data [@Liu2022; @Rigatti2020; @Lambert2022; @Kim2021; @Rahman2022; @Rahman2022a; @McGraw2023; @Liu2021; @Pinheiro2023]. We show some elementary examples illustrating the use of the package in the next section. The package also includes more detailed vignettes, describing in particular the appropriate use of survey weights, and directing readers to an extensive array of online resources._**
  
- Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers may prove challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis is difficult. While accurate textual description of these processes **_can become unwieldy_**, they can be succinctly and **_unambiguously described through software. We have incorporated tools in the `nhanesA` R package_** to make it easier, **_in conjunction with tools such as `Sweave` [@leisch2002sweave], `rmarkdown` [@Xie2018; @Xie2020], and `quarto` [@allaire2023quarto], to synchronize_** the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief **description, _in the form of a supplement, of_** ways in which authors can enhance the reproducibility of their work by readers.
+Replication of published papers remains a demanding endeavor. Even with well-intentioned authors, recreating tables and graphs from their papers may prove challenging. This difficulty often stems from a lack of specificity in reporting the extent and manner of data cleaning, the details of inclusion criteria and specific phenotypic definitions. Furthermore, accurately detailing the extent to which the data were transformed or filtered during the analysis is difficult. While accurate textual description of these processes **_can become unwieldy_**, they can be succinctly and **_unambiguously described through software. We have incorporated tools in the `nhanesA` R package_** to make it easier, **_in conjunction with tools such as `Sweave` [@leisch2002sweave], `rmarkdown` [@Xie2018; @Xie2020], and `quarto` [@allaire2023quarto], to synchronize_** the software descriptions of the analysis with the outputs and to easily share the software with interested readers. We also provide a brief **description, _in the form of a supplement, of_** ways in which authors can enhance the reproducibility of their work by readers.
 
 ## Methods
 
@@ -63,13 +49,15 @@ Since 1999, NHANES has transitioned to a continuous survey format, distinctively
 
 The publicly available continuous NHANES data consists of over 1500 different tables, or questionnaires. Each cycle surveys a distinct set of individuals using a cluster sample approach [@cdcex2023]. Each cycle produces data tables in five categories: Demographics, Dietary, Examination, Laboratory and Questionnaire. There are also limited access data that are not publicly available and require a formal request for access.
 
-The available data can be downloaded using `HTTPS` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format, and a documentation file, in HTML, that describes the data variables and format. During the COVID pandemic the CDC modified some procedures as documented in @Ram2021.
+The available data can be downloaded using `HTTPS` requests from the CDC website. For each table there are two components, the raw data which is provided in SAS (Statistical Analysis Software) `XPT` (Transport File Format) format [@sas2021xport], and a documentation file, in HTML, that describes the data variables and format. During the COVID pandemic the CDC modified some procedures as documented in @Ram2021.
 
 We next describe how the `nhanesA` **_R package_** offers effective and reproducible solutions to computational and analytical problems arising in epidemiological use of NHANES data. 
 
 ### Search relevant variables and data files for analysis
 
 While the CDC website provides search capabilities, we believe that using dedicated R-based tools offers analysts a way to programmatically prepare analyses and organize the research results. Within the `nhanesA` **_R package_**, we have incorporated advanced search utilities. Functions such as `nhanesSearch()`, `nhanesSearchTableNames()`, and `nhanesSearchVarName()` have been crafted to streamline and optimize these search processes.
+
+
 
 ### Downloading data to your local machine
 
@@ -81,7 +69,6 @@ While the CDC website provides search capabilities, we believe that using dedica
 ![Figure 1: a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data. \label{fig:DEMO_J}](images/translated.jpg)
 
 
-
 <!-- \begin{figure}[h] -->
 <!--   \includegraphics[width=3.5in]{images/translated.jpg} -->
 <!--   \caption{a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data.} -->
@@ -89,10 +76,41 @@ While the CDC website provides search capabilities, we believe that using dedica
 <!-- \end{figure} -->
 
 
+The `nhanesA` package includes several other utility functions. The functions available in version 1.0 of the package are briefly summarized in Table 1.
+
+
+Table 1: List of of the functions of nhanesA 1.0.
+```{r functions,echo=FALSE}
+func_list = c(
+browseNHANES          = "Open a browser to NHANES",
+nhanes                = "Download an NHANES table and return as a data frame",
+nhanesAttr            = "Returns the attributes of an NHANES data table",
+nhanesCodebook        = "Display codebook for selected variable",
+nhanesCodebookFromURL = "Download and parse an NHANES doc file from URL",
+nhanesDXA	          = "Import Dual Energy X-ray Absorptiometry (DXA) data",
+nhanesFromURL         = "Download an NHANES table from URL",
+nhanesManifest        = "Download and parse NHANES manifests",
+nhanesOptions         = "Options for the nhanesA package",
+nhanesSearch          = "Perform a search over the comprehensive NHANES variable list",
+nhanesSearchTableNames= "Search for matching table names",
+nhanesSearchVarName   = "Search for tables that contain a specified variable",
+nhanesTables          = "Returns a list of table names for the specified survey group",
+nhanesTableSummary    = "Summarize NHANES table",
+nhanesTableVars       = "Displays a list of variables in the specified NHANES table",
+nhanesTranslate       = "Display code translation information"
+)
+func_df = data.frame(Functions=names(func_list), 
+                     Descriptions=func_list
+                     )
+knitr::kable(func_df, "pipe",row.names = F)
+```
+
+
+
 
 ### Align tables within a cycle or across cycles
 
-**_After downloading, the resulting data frames may be processed further using standard R data manipulation tools, including those from popular contributed packages such as `dplyr` [@dplyr2023wickham], `data.table` [@datatable2023dowle], etc. For example, data from different tables_** within a cycle can be synchronized using the R function `merge()` with `SEQN` as the key. Additionally, one can align tables across cycles as long as the relevant data were collected **_in all the cycles_**. The main demographic questionnaire, for example, is present in all cycles **_and may be easily combined. However, it is important to be cautious when merging or combining data across cycles_** as the names of the variables are not guaranteed to remain constant, and the actual questions may change over time. The CDC uses some naming conventions, but these are not always applied consistently.
+**_After downloading, the resulting data frames may be processed further using standard R data manipulation tools, including those from popular contributed packages such as `dplyr` [@dplyr2023wickham], `data.table` [@datatable2023dowle], etc. For example, data from different tables_** within a cycle can be synchronized using the R function `merge()` with `SEQN` as the key. Additionally, one can align tables across cycles as long as the relevant data were collected **_in all the cycles. However, it is important to be cautious when merging or combining data across cycles_** as the names of the variables are not guaranteed to remain constant, and the actual questions may change over time. The CDC uses some naming conventions, but these are not always applied consistently.
 
 
 ### Use the survey weights to obtain valid estimates
@@ -160,52 +178,6 @@ both = cbind(mns, Adj_DBP = adjmnsbyEth[, 2])
 knitr::kable(both, row.names = FALSE)
 ```
 
-### Combining data across cycles
-
-**_Finally, to illustrate the process of combining data across cycles, we combine the demographic data table from all cycles. NHANES table names typically have a suffix; the suffixes `_A`, `_B`, `_C`,and so on generally correspond to NHANES cycle years from 1999-2000, 2001-2002, 2003-2004, etc. However, it is important to highlight that not every table strictly adheres to this naming convention. For instance, while `DEMO_B` and `DEMO_C` are associated with the 2001-2002 and 2003-2004 cycles, respectively, the corresponding table for the 1999-2000 cycle is named 'DEMO', without the `_A` suffix. While this pattern holds for most tables, certain tables such as `SSAFB_A` and `SSANA_A` from the 1999-2000 cycle do include the `_A` suffix. To assist users in navigating these variations, the `nhanesA` package includes the `nhanesSearchTableNames()` function, which allows users to easily locate all table names containing a specific string, thus simplifying the process of identifying relevant table names._**
-
-```{r alldemo, error = TRUE}
-demo_all = nhanesSearchTableNames("DEMO")
-demo_all
-```
-
-**_The last table in this list merits special mention. During the 2019-2020 cycle, data collection was disrupted by the COVID-19 pandemic. Therefore, the partial 2019-2020 data (herein 2019-March 2020 data) were combined with data from the previous cycle (2017-2018) to create a nationally representative sample covering 2017-March 2020.  These data files have the same basic file name, e.g., `DEMO`, but add the prefix `P_`. These 'pre-pandemic' files require special handling and the CDC has provided substantial guidance as well as updated survey weights._**
-
-**_We can now download all these datasets from the CDC website using the `nhanes()` function. Note, however, that this process is likely to be somewhat slow as several files will need to be downloaded._**
-
-```{r getalldemo, error = TRUE}
-all_demo_data = sapply(demo_all, nhanes, simplify = FALSE)
-sapply(all_demo_data, dim)
-```
-
-**_The first row in the output above give the number of participants in each cycle, and the second row denotes the number of variables in the corresponding `DEMO` table. We can see that each cycle has around 10,000 participants, who are unique across cycles. Note, however, that the larger number of participants in the `P_DEMO` dataset is misleading, because many of these participants are actually from the previous cycle as described above. We will drop this table before combining the remaining datasets._**
-
-**_The differing number of variables across cycles indicate that variables are not measured consistently across cycles. In fact, many variables included in the `DEMO` table in the first cycle were subsequently included in other tables, and others have been dropped altogether or added. We can make a list of the variables that are common to all `DEMO` tables, and combine the corresponding data subsets together, as follows._**
-
-```{r combinedemo}
-all_demo_data = head(all_demo_data, -1)
-common_vars = lapply(all_demo_data, names) |> Reduce(f = intersect)
-common_vars
-demo_combined = lapply(all_demo_data, `[`, common_vars) |> do.call(what = rbind)
-dim(demo_combined)
-```
-
-**_The combined dataset can be analysed further using standard tools. For example, Figure 2 uses the `ggplot2` package [@Wickham2016ggplot2] to summarize the number of participants by recorded ethnicity and gender by cycle._**
-
-```{r demoplot,fig.width=12, fig.height=7, fig.show='hide', fig.path = 'images/'}
-library("ggplot2")
-demo_combined |> transform(cycle = substring(SDDSRVYR, 8, 17)) |>
-    xtabs(~ cycle + RIAGENDR + RIDRETH1, data = _) |>
-    array2DF() |>
-    ggplot(aes(x = cycle, y = Value, color = RIDRETH1, group = RIDRETH1)) +
-        geom_point() + geom_path() + facet_wrap(~ RIAGENDR, nrow = 2)
-```
-
-![Figure 2: Number of participants by recorded ethnicity and gender by cycle, excluding the pre-pandemic (2017-March 2020) cycle.](images/demoplot-1.png)
-
-
-
-
 
 ### Challenging Aspects of the NHANES data
 
@@ -225,37 +197,41 @@ Within NHANES there is a substantial amount of missing data. **_In part_,** this
 
 
 In the NHANES dataset, data coarsening is frequently observed. For instance, **_the age variable `RIDAGEYR` uses a representation where ages over 85 are recorded as the value 85 in the first four cycles, and ages over 80 are recorded as 80 in subsequent cycles._** 
-Similarly, the ratio of family income to poverty (`INDFMPIR`) uses the value 5 to indicate a ratio greater than or equal to 5.00. **_These practices, adopted by CDC keeping privacy issues in mind, nonetheless compromise the precision of numerical values in the dataset and require careful handling. Additionally, some variables, although expressed numerically, may be better interpreted as categorical data. Consider the Body Mass Index ($11.5 \sim 67.3 kg/m^2$, represented as BMXBMI in BMX_J) for example. While it is expressed as a continuous number, categorizing it into predefined ranges such as underweight (<18.5), healthy weight (18.5 to <25), overweight (25.0 to <30), and obesity (30.0 or higher) might yield more meaningful analyses. And for BMI there are special challenges working with children where the use of age specific reference values is essential for identifying individuals in the extremes._**
+Similarly, the ratio of family income to poverty (`INDFMPIR`) uses the value 5 to indicate a ratio greater than or equal to 5.00. **_These practices, adopted by CDC keeping privacy issues in mind, nonetheless compromise the precision of numerical values in the dataset and require careful handling. Additionally, for variables such as BMI, the inclusion of children in the survey provide special challenges as their interpretation requires the use of age specific reference values._**
+
+
+
+<!-- Additionally, some variables, although expressed numerically, may be better interpreted as categorical data. Consider the Body Mass Index ($11.5 \sim 67.3 kg/m^2$, represented as BMXBMI in BMX_J) for example. While it is expressed as a continuous number, categorizing it into predefined ranges such as underweight (<18.5), healthy weight (18.5 to <25), overweight (25.0 to <30), and obesity (30.0 or higher) might yield more meaningful analyses. And for BMI there are special challenges working with children where the use of age specific reference values is essential for identifying individuals in the extremes. -->
 
 **_As noted earlier, the 2019-2020 cycle data collection was disrupted by the pandemic, and to create a nationally representative sample, the CDC combined the paritial data with data from the previous cycle. These datasets require special handling, and particular care should be taken before combining data from this release with data from other cycles._**
 
 
-## **_Other R Packages and Software to Obtain NHANES Data_**
+## **_Other Software Tools to Obtain NHANES Data_**
 
 ### R Packages
 
-There are several other R packages that pertain to NHANES, including `nhanesaccel` @Domelen2020, `AsthmaNHANES` @sun2021, `NHANES` @Pruim2015, and `RNHANES` @Susmann2016. The first three pertain to specific subsets of NHANES data and are not designed for comprehensive access and use. The `RNHANES` package has functions to download and process continuous NHANES data, however, the package has not been updated to accommodate the pandemic-affected data.
+There are several other R packages that pertain to NHANES, including `nhanesaccel` [@Domelen2020], `AsthmaNHANES` [@sun2021], `NHANES` [@Pruim2015], and `RNHANES` [@Susmann2016]. The first three pertain to specific subsets of NHANES data and are not designed for comprehensive access and use. The `RNHANES` package has functions to download and process continuous NHANES data, however, the package has not been updated to accommodate the pandemic-affected data.
 
-The `NHANES` package @Pruim2015 provides a subset of data from the 2009-2010 and 2011-2012 cycles. The authors have created a small subset of the data for teaching purposes. They have included 75 variables and created two datasets. The `NHANESraw` dataframe is the raw data together with information on the sample weighting scheme. Their `NHANES` dataframe contains 10,000 rows that were resampled from 'NHANESraw' that *accounted for* the oversampling and hence analyses using `NHANES` can be performed without using the survey weights. The authors are quite explicit that this is a teaching resource and that any scientific investigations should rely on the data from the NHANES CDC site and not on their subset.
+The `NHANES` package [@Pruim2015] provides a subset of data from the 2009-2010 and 2011-2012 cycles. The authors have created a small subset of the data for teaching purposes. They have included 75 variables and created two datasets. The `NHANESraw` dataframe is the raw data together with information on the sample weighting scheme. Their `NHANES` dataframe contains 10,000 rows that were resampled from `NHANESraw` that *accounted for* the oversampling and hence analyses using `NHANES` can be performed without using the survey weights. The authors are quite explicit that this is a teaching resource and that any scientific investigations should rely on the data from the NHANES CDC site and not on their subset.
 
-The `RNHANES` package @Susmann2016 is produced by the Silent Spring Institute.
+The `RNHANES` package [@Susmann2016] is produced by the Silent Spring Institute.
 RNHANES provides an easy way to download and analyze data from NHANES with a focus on the laboratory data. They provide methods to find all data files and to download them. They provide a search capability as well as making some attempt to obtain the units of measurement for the laboratory data.  The `nhanes_load_data()` function provides a method for downloading and merging data, although the features are limited. It also has arguments to allow for recording / translating factor variables, although that seemed to be very slow to run.  There are **_useful_** functions that encapsulate the use of the `survey` package, but that seems to be at the expense of flexibility in the analysis.
 
 ### Stata
 
-We did not find any Stata modules or packages but there are good resources available on the web, such as those from the Statistical Consulting Unit at UCLA @UCLA2023.
+We did not find any Stata modules or packages but there are good resources available on the web, such as those from the Statistical Consulting Unit at UCLA [@UCLA2023].
 
 ### Python
 
-We are aware of two actively maintained Python libraries for working with NHANES data: `nhanes-dl` @LeviButcher and `pynhanes` @Pyrkov2023. In Python, one can use Jupyter notebooks to achieve reproducible results. Jupyter notebooks, similar to Rmarkdown, allow for an organized presentation of text, code, and their respective outputs (including plots) within a single document. This facilitates reproducibility, enabling readers to easily replicate and understand the presented work. The `nhanes-dl` library is designed to download Continuous NHANES codebooks and convert them into ready-to-use pandas dataframes, although its documentation is somewhat lacking. The `pynhanes` package  offers several Jupyter notebooks on its GitHub repository @Pyrkov20231 to demonstrate its usage.
+We are aware of two actively maintained Python libraries for working with NHANES data: `nhanes-dl` [@LeviButcher] and `pynhanes` [@Pyrkov2023]. In Python, one can use Jupyter notebooks to achieve reproducible results. Jupyter notebooks, similar to Rmarkdown, allow for an organized presentation of text, code, and their respective outputs (including plots) within a single document. This facilitates reproducibility, enabling readers to easily replicate and understand the presented work. The `nhanes-dl` library is designed to download Continuous NHANES codebooks and convert them into ready-to-use pandas dataframes, although its documentation is somewhat lacking. The `pynhanes` package  offers several Jupyter notebooks on its GitHub repository [@Pyrkov20231] to demonstrate its usage.
 
 ## Discussion and future work
 
 NHANES, with its depth and breadth of health and nutritional data, serves as a cornerstone for epidemiologic and health research. However, the intricacies and nuances associated with the data, combined with the varied methodologies employed across different research domains, present considerable analytic challenges. We have described a number of ways in which the `nhanesA` R package can facilitate analyzing these data and have indicated a number of issues that are not easily addressed in software and remain for the analyst to address. 
 
-We believe that there is additional value to be obtained from the many papers based on NHANES, and in particular point out that when the reported analyses are reproducible then they also become extensible in at least two directions. First, when studying population characteristics there is substantial value in being able to repeat an analysis when data from a new cycle are released. Second, for any analysis, the ability to extend that analysis using additional covariates from other questionnaires, or to explore the impact of unadjusted for covariates (eg. explore social determinants of health) can be very powerful. 
+We believe that there is additional value to be obtained from the many papers based on NHANES, and in particular point out that when the reported analyses are reproducible then they also become extensible in at least two directions. First, when studying population characteristics there is substantial value in being able to repeat an analysis when data from a new cycle are released. Second, for any analysis, the ability to extend that analysis using additional covariates from other questionnaires, or to explore the impact of _not_ adjusted for covariates (e.g., explore social determinants of health) can be very powerful. 
 
-With regard to reproducibility we mean the computational reproducibility of the figures and tables in a paper. Which essentially means that once the dataset is agreed upon, all analytical outputs can be precisely replicated, while the general scientific reproducibility emphasizes the need to obtain similar results across analogous, though not identical, samples. In the supplement we propose a process that offers a structured approach for researchers using the NHANES dataset. Harnessing the synergy between GitHub, Rmarkdown / Quarto, and specific packages like `nhanesA`, we set the stage for a transparent, modular, and rigorously organized research process. Every stage, from data selection to preprocessing decisions and analytical procedures, is systematically recorded and versioned, ensuring transparency and reproducibility.  The essential components of this process have been used to write papers and books by many of the contributors to the Bioconductor Project @biocod for the past 20 years or so. We believe that it would be valuable to start a community effort to collect and collate papers based primarily on NHANES data that use strategies to encourage reproducibility and extensibility, regardless of the computing language used.
+With regard to reproducibility we mean the computational reproducibility of the figures and tables in a paper. Which essentially means that once the dataset is agreed upon, all analytical outputs can be precisely replicated, while the general scientific reproducibility emphasizes the need to obtain similar results across analogous, though not identical, samples. In the supplement we propose a process that offers a structured approach for researchers using the NHANES dataset. Harnessing the synergy between GitHub, Rmarkdown / Quarto, and specific packages like `nhanesA`, we set the stage for a transparent, modular, and rigorously organized research process. Every stage, from data selection to preprocessing decisions and analytical procedures, is systematically recorded and versioned, ensuring transparency and reproducibility.  The essential components of this process have been used to write papers and books by many of the contributors to the Bioconductor Project [@biocond] for the past 20 years or so. We believe that it would be valuable to start a community effort to collect and collate papers based primarily on NHANES data that use strategies to encourage reproducibility and extensibility, regardless of the computing language used.
 
 We believe that encapsulating the public NHANES data into a SQL database that is contained in a Docker [@Dirk; @docker] container is an important next step. This would enable faster access, both due to the data being local to the user and also because the use of SQL and various tools that come with databases better support some of the data manipulations. We are working on a container that also includes an instance of R and RStudio [@posit2023rstudio] to further encourage reproducibility of results. Such an approach will make it easier to add data resources and create more complex, and hence more valuable data sets. 
 
@@ -277,15 +253,15 @@ We thank Vincent Carey from Harvard Medical School for his review and insights o
 
 ### Reproducible research
 
-We believe that the `nhanesA` R package makes a substantial contribution to enhancing reproducibility and rigor in the scientific process. Here we want to outline a few tools that can be used in conjunction with `nhanesA` to create documents that are reusable and extensible. The reproducibility of a paper, or result, can be enhanced by using a number of tools and processes that are commonly used for software development. We outline these set of tools that we believe are useful and then give a vignette outlining a simplified paper-writing approach that uses these tools. 
+We believe that the `nhanesA` R package makes a substantial contribution to enhancing reproducibility and rigor in the scientific process. Here we want to outline a few tools that can be used in conjunction with the `nhanesA` **R package** to create documents that are reusable and extensible. The reproducibility of a paper, or result, can be enhanced by using a number of tools and processes that are commonly used for software development. We describe a set of tools which we believe are useful, and then outline a simplified paper-writing approach that uses these tools. 
 
-An important development was the concept of *Markdown* @Gruber, which is a straightforward markup language designed for crafting formatted text without the intricacies of HTML. Rmarkdown builds upon Markdown, intertwining it with the R programming language. Essentially, Rmarkdown is an implementation of Markdown, allowing users to embed R code within a document. This fusion supports dynamic reporting, where narrative and code coexist, fostering clear, reproducible research outcomes.
+An important development was the concept of *Markdown* [@Gruber], which is a straightforward markup language designed for crafting formatted text without the intricacies of HTML. Rmarkdown builds upon Markdown, intertwining it with the R programming language. Essentially, Rmarkdown is an implementation of Markdown, allowing users to embed R code within a document. This fusion supports dynamic reporting, where narrative and code coexist, fostering clear, reproducible research outcomes.
 
-The @Xie2018 and @Allaire2023  **_describe systems_** that integrate software (code) and text. These can be thought of as explicit descriptions of how the figures and the tables in the published paper were created. Rmarkdown documents are processed by different *engines* that transform them into specific outputs such as a PDF format for publication or a HTML output for putting on the web. 
+@Xie2018 and @Allaire2023  **_describe systems_** that integrate software (code) and text. These can be thought of as explicit descriptions of how the figures and the tables in the published paper were created. Rmarkdown documents are processed by different *engines* that transform them into specific outputs such as a PDF format for publication or a HTML output for putting on the web. 
 
-A second important tool to help with reproducibility is the use of version control systems. These were originally developed for software development but they work equally well for writing papers. A widely used tool for version control is GitHub @github.  One example of using this approach based on R @R-base is the Epidemiologist R Handbook @Handbook which is written in Bookdown @Xie2020 and is maintained in GitHub @Handbook2. The authors have created an entire textbook using markdown and they use GitHub to handle version issues as well as bug reporting and fixing. This approach has been used widely in the R community for over 20 years with substantial success. **_The authors of Tidyverse @tidyverse manage a set of popular data science tools with GitHub._**It should come as no surprise to the reader that this paper is also written in markdown and uses GitHub as its source code repository @paperself. **_Researchers can host their work on publishing system @Quarto and commercial @Posit ._**
+A second important tool to help with reproducibility is the use of version control systems. These were originally developed for software development but they work equally well for writing papers. A widely used tool for version control is GitHub [@github].  One example of using this approach based on R [@R-base] is _The Epidemiologist R Handbook_ [@Handbook] which is written in Bookdown [@Xie2020] and is maintained in GitHub [@Handbook2]. The authors have created an entire textbook using markdown and they use GitHub to handle version issues as well as bug reporting and fixing. This approach has been used widely in the R community for over 20 years with substantial success. **_For example, the authors of Tidyverse [@tidyverse] manage a set of popular data science tools with GitHub._** It should come as no surprise that this paper is also written in markdown and uses GitHub as its source code repository [@paperself]. **_Depending on their preferences, researchers can also use alternative authoring workflows such as those based on `Sweave` [@leisch2002sweave] or Quarto [@Quarto] and alternative source code management systems such as Subversion [@collins2002subversion]._**
 
-![Figure 4: Workflow for ensuring transparent and reproducible research: 1) Authors use RMarkdown and R files, managed with Git version control for organization and collaboration. The nhanesA package facilitates NHANES access. Git and GitHub facilitate this by archiving and source code control. 2) Work is committed, pushed, and made public on GitHub in the form of Rmarkdown and R files. 3) Any one who wants to reproduce the work can fork or clone the repository to reproduce or expand upon the work. External users can access the NHANES database in the same way as the original authors. Contributions or extensions can be integrated via pull requests and subsequent merging.  \label{fig:process}](images/process.jpg)
+![Figure 4: Workflow for ensuring transparent and reproducible research: 1) Authors use RMarkdown and R files, managed with Git version control for organization and collaboration. The `nhanesA` package facilitates NHANES access. Git and GitHub facilitate this by archiving and source code control. 2) Work is committed, pushed, and made public on GitHub in the form of Rmarkdown and R files. 3) Any one who wants to reproduce the work can fork or clone the repository to reproduce or expand upon the work. External users can access the NHANES database in the same way as the original authors. Contributions or extensions can be integrated via pull requests and subsequent merging.  \label{fig:process}](images/process.jpg)
 
 \begin{figure}
   \includegraphics{images/process.jpg}
@@ -295,44 +271,14 @@ A second important tool to help with reproducibility is the use of version contr
 
 
 
-### Summary of nhanesA Functions
-
-Table 1: List of of the functions of nhanesA 1.0.
-```{r functions,echo=FALSE}
-func_list = c(
-browseNHANES="Open a browser to NHANES.",
-nhanes="Download an NHANES table and return as a data frame.",
-nhanesAttr="Returns the attributes of an NHANES data table.",
-nhanesCodebook="Display codebook for selected variable.",
-nhanesCodebookFromURL="Parse NHANES doc URL",
-nhanesDXA	= "Import Dual Energy X-ray Absorptiometry (DXA) data.",
-nhanesFromURL= "Parse NHANES doc URL",
-nhanesManifest= "Download and parse NHANES manifests",
-nhanesOptions= "Options for the nhanesA package",
-nhanesSearch= "	Perform a search over the comprehensive NHANES variable list.",
-nhanesSearchTableNames= "	Search for matching table names",
-nhanesSearchVarName= "	Search for tables that contain a specified variable.",
-nhanesTables= "	Returns a list of table names for the specified survey group.",
-nhanesTableSummary= "	Summarize NHANES table",
-nhanesTableVars= "Displays a list of variables in the specified NHANES table.",
-nhanesTranslate= "Display code translation information."
-)
-
-
-func_df = data.frame(Functions=names(func_list), 
-                     Descriptions=func_list
-                     )
-knitr::kable(func_df, "pipe",row.names = F)
-
-```
 
 #### Markdown
 
 Markdown is a lightweight markup language that uses simple syntax to format text. Designed for readability and simplicity, it enables the creation of well-structured documents without the complexities of HTML. Common uses include README files, forums, and documentation. With Markdown, elements like headers, links, lists, and bold or italic text are easily achieved using non-intrusive syntax.
-Markdown Cheat Sheet:<https://www.markdownguide.org/cheat-sheet/>
+Markdown Cheat Sheet: <https://www.markdownguide.org/cheat-sheet/>
 
-Rmarkdown, on the other hand, extends the capabilities of Markdown for the R programming community. It seamlessly integrates the R code with Markdown, allowing users to embed R code chunks within the text. When an Rmarkdown file is executed using tools like knitr, the R code is run, and its outputs (graphs, tables, etc.) are embedded directly into the document. This results in dynamic, interactive reports that combine narrative, code, and output in a single document.
-R Markdown Cheat Sheet:<https://rmarkdown.rstudio.com/lesson-15.HTML>
+Rmarkdown extends the capabilities of Markdown for the R programming community. It seamlessly integrates the R code with Markdown, allowing users to embed R code chunks within the text. When an Rmarkdown file is executed using tools like `knitr` [@xie2015knitr], the R code is run, and its outputs (graphs, tables, etc.) are embedded directly into the document. This results in dynamic, interactive reports that combine narrative, code, and output in a single document.
+R Markdown Cheat Sheet: <https://rmarkdown.rstudio.com/lesson-15.HTML>
 
 #### Git and GitHub 
 
@@ -341,7 +287,6 @@ R Markdown Cheat Sheet:<https://rmarkdown.rstudio.com/lesson-15.HTML>
 **GitHub:** While Git is the underlying system that tracks changes, GitHub is a web-based platform that hosts Git repositories. It provides a visual interface and additional tools for collaboration, making it easier for researchers and developers to share, discuss, and collaborate on their projects.
 
 Key Concepts:
-
 
 - **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively.
 
@@ -357,7 +302,7 @@ Key Concepts:
 
 ### Sample Design of NHANES
 
-**_In @Zipf2013 the authors provide the following description of the sampling design.  Anyone analyzing these data should work with sample survey experts to ensure that their models are accurately accounting for the sampling design._**
+**_@Zipf2013 provide the following description of the NHANES sampling design.  Anyone analyzing NHANES data should work with sample survey experts to ensure that their models are accurately accounting for the sampling design._**
 
 _NHANES was designed to assess the health and nutritional status of the civilian noninstitutionalized U.S. population. NHANES data were not obtained using a simple random sample. Rather, a complex, multistage probability sampling design was used to select a sample representative of the civilian noninstitutionalized household population of the United States._
 _Sample selection for NHANES followed these stages, in order:_
@@ -367,22 +312,20 @@ _3. Selection of specific households within segments._
 _4. Selection of individuals within a household; see the ‘‘Household Interview’’ section for more information on sample person selection._
 
 
-
 ### A simplified NHANES paper writing process
 
 Here we sketch out an outline for writing a paper using the tools we mention in order to create a reproducible paper. By reproducible we really mean that once we have agreed on the data to analyze, that all of the tables, graphs and other analyses can be reproduced exactly. Now this is not the concept of scientific reproducibility where one expects to find a similar result when the basic experiment is repeated, under similar but not identical circumstances, but it is an important goal in and of itself. 
 
 One would first create a new GitHub repository for the project.
-Then, identify the variables of interest and the questionnaire files they are in as well as the cycles (years) of data that will be used.  Create an Rmarkdown document and in that use the `nhanesA` package to download the relevant data.  The author will then check that document into the GitHub repository so that all updates and modifications are noted and so that anyone can check out the document.
+Then, identify the variables of interest and the questionnaire files they are in as well as the cycles (years) of data that will be used.  Create an Rmarkdown document and in that use the `nhanesA` package to download the relevant data.  The author will then check that document into the GitHub repository so that all updates and modifications are noted and so that collaborators can check out the document.
 
 At this point you will start to write code chunks in the document to first transform and filter the data according to the entry criteria for your study.  For example, you might want to look at blood pressure on adults over 40. On examining the `BXP` tables you find that two different blood pressure measurements (systolic and diastolic) were recorded at two different time points.  You have to decide how to process those data.  Do you take only one, or do you average both? What about people that have only one measurement? Do you keep them or remove them?  All of these decisions will impact the analysis and the actual values you report in your paper.  By including the code to do this processing in your markdown document and reader can check the code for the actual steps you took.
 
-Then as your research progresses you will manipulate the data to compute different summary statistics, perhaps mean diastolic blood pressure by reported ethnicity.  Again the specific details of how you did that will be maintained in the markdown document.  Ultimately you will have finished your analysis and then arrange the outputs, using the tools available for processing Rmarkdown to produce the final paper for publication.
-Then you can submit it. And make sure you commit everything you need (images, tables, text etc) to your GitHub repository.
+Then as your research progresses you will manipulate the data to compute different summary statistics, perhaps mean diastolic blood pressure by reported ethnicity.  Again the specific details of how you did that will be maintained in the markdown document.  Ultimately you will have finished your analysis and then arrange the outputs, using the tools available for processing Rmarkdown to produce the final paper for publication, which you can then submit. And make sure you commit everything you need (images, tables, text etc) to your GitHub repository.
 
 Once the reviews come back you will update and modify that code and text to reflect the changes that have been asked for. And again you will check in all the files and changes. Once your paper is published you can refer interested parties to your GitHub repository where they can download the markdown documents and rerun them. Perhaps they will make changes to your assumptions to see whether the results change. 
 
-These tools, though demanding an initial learning curve, are intuitive and efficient. As more researchers embrace these practices, the collective reliability and robustness of NHANES-based research will undoubtedly enhance. By fostering an ecosystem of transparent, replicable, and collaborative research, we can reach more informed decisions, richer insights, and a deeper understanding of the NHANES.
+These tools, though demanding an initial learning curve, are intuitive and efficient. As more researchers embrace these practices, the collective reliability and robustness of NHANES-based research will undoubtedly be enhanced. By fostering an ecosystem of transparent, replicable, and collaborative research, we can reach more informed decisions, richer insights, and a deeper understanding of the NHANES.
 
 
 ## References
