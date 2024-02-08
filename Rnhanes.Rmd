@@ -126,6 +126,7 @@ NHANES uses a complex, four-stage sample design and appropriate analyses typical
 We now demonstrate the use of the `nhanesA` R package **_through some examples. To download data from NHANES, we first need to know the relevant table names. NHANES table names typically consist of a base table name and a suffix; the suffixes `_A`, `_B`, `_C`,and so on generally correspond to NHANES cycle years from 1999-2000, 2001-2002, 2003-2004, etc. However, it is important to highlight that not every table strictly adheres to this naming convention. For instance, while `DEMO_B` and `DEMO_C` are associated with the 2001-2002 and 2003-2004 cycles, respectively, the corresponding table for the 1999-2000 cycle is named 'DEMO', without the `_A` suffix. While this pattern holds for most tables, certain tables such as `SSAFB_A` and `SSOL_A` from the 1999-2000 cycle do include the `_A` suffix. To assist users in navigating these variations, the `nhanesA` package includes the `nhanesSearchTableNames()` function, which allows users to easily locate all table names containing a specific string, thus simplifying the process of identifying relevant table names._**
 
 ```{r searchtablenames}
+library("nhanesA")
 nhanesSearchTableNames("DEMO") # demographical information
 nhanesSearchTableNames("BPX") # blood pressure
 ```
@@ -139,7 +140,6 @@ nhanesSearchTableNames("BPX") # blood pressure
 **_We next look_** at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we **_first_** download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`) **_corresponding to this cycle_**.
 
 ```{r demoj, eval=TRUE}
-library("nhanesA")
 demoj = nhanes("DEMO_J")
 bpxj = nhanes("BPX_J")
 dim(demoj)
