@@ -33,7 +33,11 @@ Database URL: <https://github.com/cjendres1/nhanes>
 
 NHANES [@cdc2023] is a pivotal program dedicated to assessing the health and nutritional status of both adults and children in the United States. Its value stems from its comprehensive approach that merges detailed interviews and thorough physical examinations. NHANES is administered by the National Center for Health Statistics (NCHS), an integral part of the Centers for Disease Control and Prevention (CDC), tasked with generating crucial health and vital statistics for the entire nation.
  
-Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed [@mih2023] search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies. Across cycle years (1999-2000 to 2017-2018), approximately 5,000 participants joined the program annually, with data of 15,560 participants reported for the period 2017-March 2020, where activities were altered due to the COVID pandemic._**
+Since 1999, NHANES has transitioned to a continuous survey format, distinctively termed "continuous NHANES" to differentiate it from its preceding versions. Continuous NHANES surveys are grouped in two-year *cycles*, with the inaugural cycle rolled out in 1999-2000. A PubMed [@mih2023] search reveals that NHANES is referenced almost 5,000 times annually, highlighting its significance in the research community. The vast majority of the NHANES data are available for download from the CDC website, which also offers comprehensive guidance on data utilization, downloading procedures, and **_analytic methodologies. Across cycle years (1999-2000 to 2017-2018), approximately 5,000 participants joined the program annually, with data of 15,560 participants reported for the period 2017-March 2020, where activities were altered due to the COVID pandemic. Figure 1 shows the of breakup of number of participants by recorded ethnicity and gender, upto the 2017-2019 cycle._**
+
+
+![Figure 1: Number of participants by recorded ethnicity and gender by cycle, excluding the pre-pandemic (2017-March 2020) cycle.](images/demoplot.png)
+
 
 **_NHANES employs a distinct sampling strategy that captures data from demographic groups often missing or underrepresented in many epidemiology studies. The sampling design intentionally over-samples demographic groups such as African Americans and Hispanic populations, and age groups such as adolescents and the elderly. The sampling design is a stratified design, with 15 counties across the US chosen as primary sampling units each year. Because of this design, analyses of the data should rely on proper use of appropriate survey sampling methodology [@Zipf2013] when making population-level estimates._**
 
@@ -61,12 +65,12 @@ While the CDC website provides search capabilities, we believe that using dedica
 
 ### Downloading data to your local machine
 
-**_Using the `nhanesA` R package,_** data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes()` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are **_typically encoded as integers in the raw data available as XPT files, with the interpretations of these integer codes available in the accompanying HTML documentation files. By default, the `nhanes()` function 'translates' these integer codes into more easily interpretable text strings._** In Figure 1, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from the `DEMO_C` table where, for example, the untranslated values for `RIAGENDR` coded as `1` and `2` are translated to `Male` and `Female`.
+**_Using the `nhanesA` R package,_** data can be downloaded directly from CDC servers into data frames, readying it for subsequent analysis. The function `nhanes()` takes the name of the table that is wanted and downloads it. Categorical variables, both ordered and unordered, are **_typically encoded as integers in the raw data available as XPT files, with the interpretations of these integer codes available in the accompanying HTML documentation files. By default, the `nhanes()` function 'translates' these integer codes into more easily interpretable text strings._** In Figure 2, we show the translated and untranslated variables `RIAGENDR` and `RIDRETH1` from the `DEMO_C` table where, for example, the untranslated values for `RIAGENDR` coded as `1` and `2` are translated to `Male` and `Female`.
 
 **_Apart from ease of interpretation, this translation is also important because _** if an untranslated categorical variable is used in a regression model then the variable would be treated as a **_continuous_** variable and the corresponding estimates would, in general, not be appropriate. **_The default translation in the `nhanes()` function can be suppressed_** by setting the argument `translated` to `FALSE`. 
 
 
-![Figure 1: a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data. \label{fig:DEMO_J}](images/translated.jpg)
+![Figure 2: a) shows the raw data the both gender and ethnicity are encoded as integers. b) shows the translated data. \label{fig:DEMO_J}](images/translated.jpg)
 
 
 <!-- \begin{figure}[h] -->
@@ -119,9 +123,20 @@ NHANES uses a complex, four-stage sample design and appropriate analyses typical
 
 ## Examples
 
+We now demonstrate the use of the `nhanesA` R package **_through some examples. To download data from NHANES, we first need to know the relevant table names. NHANES table names typically consist of a base table name and a suffix; the suffixes `_A`, `_B`, `_C`,and so on generally correspond to NHANES cycle years from 1999-2000, 2001-2002, 2003-2004, etc. However, it is important to highlight that not every table strictly adheres to this naming convention. For instance, while `DEMO_B` and `DEMO_C` are associated with the 2001-2002 and 2003-2004 cycles, respectively, the corresponding table for the 1999-2000 cycle is named 'DEMO', without the `_A` suffix. While this pattern holds for most tables, certain tables such as `SSAFB_A` and `SSOL_A` from the 1999-2000 cycle do include the `_A` suffix. To assist users in navigating these variations, the `nhanesA` package includes the `nhanesSearchTableNames()` function, which allows users to easily locate all table names containing a specific string, thus simplifying the process of identifying relevant table names._**
+
+```{r searchtablenames}
+nhanesSearchTableNames("DEMO") # demographical information
+nhanesSearchTableNames("BPX") # blood pressure
+```
+
+**_The second example shows a change in naming convention, related to a protocol change in how blood pressure is measured. Tables with a `P_` prefix merit special mention. During the 2019-2020 cycle, data collection was disrupted by the COVID-19 pandemic. Therefore, the partial 2019-2020 data (herein 2019-March 2020 data) were combined with data from the previous cycle (2017-2018) to create a nationally representative sample covering 2017-March 2020.  These data files have the same basic file name, e.g., `DEMO`, but add the prefix `P_`. These 'pre-pandemic' files require special handling and the CDC has provided substantial guidance as well as updated survey weights._**
+
+
+
 ### Downloading and combining data
 
-We now demonstrate the use of the `nhanesA` R package **_through some examples. The first example_** looks at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we **_first_** download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`) **_corresponding to this cycle_**.
+**_We next look_** at average blood pressure for individuals over 40 years of age by reported ethnicity for the 2017-2018 cycle. For that we **_first_** download and merge the demographic data (`DEMO_J`) and the blood pressure data (`BPX_J`) **_corresponding to this cycle_**.
 
 ```{r demoj, eval=TRUE}
 library("nhanesA")
