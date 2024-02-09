@@ -29,16 +29,34 @@ dim(demo_combined)
 pdf("images/demoplot.pdf", width = 12 * 0.9, height = 7 * 0.85)
 
 
-library("ggplot2")
-
 demo_combined <- transform(demo_combined, cycle = substring(SDDSRVYR, 8, 17))
 ## demo_combined <- transform(demo_combined, cycle = factor(as.numeric(SDDSRVYR)))
+
+
+library("ggplot2")
+
 
 demo_combined |> 
     xtabs(~ cycle + RIAGENDR + RIDRETH1, data = _) |>
     array2DF() |>
     ggplot(aes(x = cycle, y = Value, color = RIDRETH1, group = RIDRETH1)) +
         geom_point() + geom_path() + facet_wrap(~ RIAGENDR, nrow = 2)
+
+library("lattice")
+
+
+trellis.par.set(standard.theme(fg = "grey50", pch = 16))
+
+demo_combined |> 
+    xtabs(~ cycle + RIAGENDR + RIDRETH1, data = _) |>
+    array2DF() |>
+    dotplot(Value ~ cycle | RIAGENDR, #data = _,
+            groups = RIDRETH1,
+            layout = c(1, 2), type = "b",
+            par.settings = simpleTheme(pch = 16),
+            auto.key = list(columns = 3))
+
+
 
 dev.off()
 
