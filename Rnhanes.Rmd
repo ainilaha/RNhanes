@@ -267,7 +267,7 @@ We thank Vincent Carey from Harvard Medical School for his review and insights o
 
 ## Appendix
 
-### Reproducible research
+### An Example Approach to Reproducible Research with the nhanesA R Package
 
 We believe that the `nhanesA` R package makes a substantial contribution to enhancing reproducibility and rigor in the scientific process. Here we want to outline a few tools that can be used in conjunction with the `nhanesA` **R package** to create documents that are reusable and extensible. The reproducibility of a paper, or result, can be enhanced by using a number of tools and processes that are commonly used for software development. We describe a set of tools which we believe are useful, and then outline a simplified paper-writing approach that uses these tools. 
 
@@ -288,35 +288,35 @@ A second important tool to help with reproducibility is the use of version contr
 
 
 
-#### Markdown
+<!-- #### Markdown -->
 
-Markdown is a lightweight markup language that uses simple syntax to format text. Designed for readability and simplicity, it enables the creation of well-structured documents without the complexities of HTML. Common uses include README files, forums, and documentation. With Markdown, elements like headers, links, lists, and bold or italic text are easily achieved using non-intrusive syntax.
-Markdown Cheat Sheet: <https://www.markdownguide.org/cheat-sheet/>
+<!-- Markdown is a lightweight markup language that uses simple syntax to format text. Designed for readability and simplicity, it enables the creation of well-structured documents without the complexities of HTML. Common uses include README files, forums, and documentation. With Markdown, elements like headers, links, lists, and bold or italic text are easily achieved using non-intrusive syntax. -->
+<!-- Markdown Cheat Sheet: <https://www.markdownguide.org/cheat-sheet/> -->
 
-Rmarkdown extends the capabilities of Markdown for the R programming community. It seamlessly integrates the R code with Markdown, allowing users to embed R code chunks within the text. When an Rmarkdown file is executed using tools like `knitr` [@xie2015knitr], the R code is run, and its outputs (graphs, tables, etc.) are embedded directly into the document. This results in dynamic, interactive reports that combine narrative, code, and output in a single document.
-R Markdown Cheat Sheet: <https://rmarkdown.rstudio.com/lesson-15.HTML>
+<!-- Rmarkdown extends the capabilities of Markdown for the R programming community. It seamlessly integrates the R code with Markdown, allowing users to embed R code chunks within the text. When an Rmarkdown file is executed using tools like `knitr` [@xie2015knitr], the R code is run, and its outputs (graphs, tables, etc.) are embedded directly into the document. This results in dynamic, interactive reports that combine narrative, code, and output in a single document. -->
+<!-- R Markdown Cheat Sheet: <https://rmarkdown.rstudio.com/lesson-15.HTML> -->
 
-#### Git and GitHub 
+<!-- #### Git and GitHub  -->
 
-**Git:** At its core, Git is a distributed version control system. It allows multiple users to work on the same project without interfering with each other's changes. By maintaining a history of every modification, Git ensures that users can revert to any previous state of their project, thus facilitating a consistent and error-free development process.
+<!-- **Git:** At its core, Git is a distributed version control system. It allows multiple users to work on the same project without interfering with each other's changes. By maintaining a history of every modification, Git ensures that users can revert to any previous state of their project, thus facilitating a consistent and error-free development process. -->
 
-**GitHub:** While Git is the underlying system that tracks changes, GitHub is a web-based platform that hosts Git repositories. It provides a visual interface and additional tools for collaboration, making it easier for researchers and developers to share, discuss, and collaborate on their projects.
+<!-- **GitHub:** While Git is the underlying system that tracks changes, GitHub is a web-based platform that hosts Git repositories. It provides a visual interface and additional tools for collaboration, making it easier for researchers and developers to share, discuss, and collaborate on their projects. -->
 
-Key Concepts:
+<!-- Key Concepts: -->
 
-- **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively.
+<!-- - **Repository (Repo)**: A repository is essentially a project's folder containing all files, folders, and relevant data. It also holds the project's revision history. On GitHub, repositories can be public or private, allowing for open-source collaboration or private work, respectively. -->
 
-- **Clone**: Cloning refers to creating a copy of a repository from GitHub onto your local machine. This allows researchers to work on their projects offline and synchronize changes later.
+<!-- - **Clone**: Cloning refers to creating a copy of a repository from GitHub onto your local machine. This allows researchers to work on their projects offline and synchronize changes later. -->
 
-- **Commit**: When you make changes to your project, Git tracks them. Committing is the process of saving these changes to the local repository. Every commit requires a message to briefly describe what was done, ensuring future users (or the future you) understand the project's evolution.
+<!-- - **Commit**: When you make changes to your project, Git tracks them. Committing is the process of saving these changes to the local repository. Every commit requires a message to briefly describe what was done, ensuring future users (or the future you) understand the project's evolution. -->
 
-- **Push**: Once changes are committed locally, they need to be sent or 'pushed' to the GitHub repository. This ensures that your online repository is up-to-date with your local changes.
+<!-- - **Push**: Once changes are committed locally, they need to be sent or 'pushed' to the GitHub repository. This ensures that your online repository is up-to-date with your local changes. -->
 
-- **Merge**: As multiple collaborators work on a project, there will be instances when two or more people modify the same piece of information. Merging is the process of combining different sequences of commits into one unified history, resolving any conflicts that arise.
+<!-- - **Merge**: As multiple collaborators work on a project, there will be instances when two or more people modify the same piece of information. Merging is the process of combining different sequences of commits into one unified history, resolving any conflicts that arise. -->
 
-- **Branch**: In Git, the main line of development is called the 'main' branch. However, when working on new features or testing out ideas without affecting the main line, users can create a 'branch' or a parallel line of development. Once satisfied with the changes, the branch can be 'merged' back into the main line.
+<!-- - **Branch**: In Git, the main line of development is called the 'main' branch. However, when working on new features or testing out ideas without affecting the main line, users can create a 'branch' or a parallel line of development. Once satisfied with the changes, the branch can be 'merged' back into the main line. -->
 
-### Sample Design of NHANES
+#### Sample Design of NHANES
 
 @Zipf2013 provide the following description of the NHANES sampling design.  Anyone analyzing NHANES data should work with sample survey experts to ensure that their models are accurately accounting for the sampling design.
 
@@ -328,7 +328,7 @@ _3. Selection of specific households within segments._
 _4. Selection of individuals within a household; see the ‘‘Household Interview’’ section for more information on sample person selection._
 
 
-### A simplified NHANES paper writing process
+#### A simplified NHANES paper writing process
 
 Here we sketch out an outline for writing a paper using the tools we mention in order to create a reproducible paper. By reproducible we really mean that once we have agreed on the data to analyze, that all of the tables, graphs, and other analyses can be reproduced exactly. Now this is not the concept of scientific reproducibility where one expects to find a similar result when the basic experiment is repeated, under similar but not identical circumstances, but it is an important goal in and of itself. 
 
